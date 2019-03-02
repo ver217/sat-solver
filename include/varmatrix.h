@@ -7,6 +7,7 @@ class VarMatrix {
     size_t *offsets;
     int *data;
   public:
+    VarMatrix();
     VarMatrix(Vector<size_t> &cnt);
     VarMatrix(const VarMatrix &matrix);
     virtual ~VarMatrix();
@@ -14,5 +15,6 @@ class VarMatrix {
     size_t length() const;
     size_t width(size_t idx) const;
     size_t total() const;
-    int& operator()(int m, int n);
+    size_t get_idx(size_t m, size_t n);
+    int& operator()(size_t m, size_t n);
 };

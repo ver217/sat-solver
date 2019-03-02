@@ -18,4 +18,5 @@ class Vector {
     size_t capacity() const;
     T& operator[](size_t idx);
     void push_back(const T& x);
+    const T& pop_back();
 };

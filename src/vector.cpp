@@ -54,4 +54,13 @@ void Vector<T>::push_back(const T& x) {
     _size++;
 }
 
+template <typename T>
+const T& Vector<T>::pop_back() {
+    if (_size > 0)
+        return data[--_size];
+    else
+        throw "out of range";
+}
+
 template class Vector<int>;
+template class Vector<size_t>;
