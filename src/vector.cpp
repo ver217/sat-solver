@@ -1,5 +1,6 @@
 #include "../include/vector.h"
 #include <stdlib.h>
+#include <string.h>
 
 template <typename T>
 Vector<T>::Vector() : _size(0), _capacity(INIT_CAPACITY), data(NULL) {
@@ -12,10 +13,9 @@ Vector<T>::Vector(size_t n) : _size(n), _capacity(n + INCREMENT), data(NULL) {
 }
 
 template <typename T>
-Vector<T>::Vector(Vector<T>& v) : _size(v.size()), _capacity(v.capacity()), data(NULL) {
+Vector<T>::Vector(const Vector<T>& v) : _size(v.size()), _capacity(v.capacity()), data(NULL) {
     data = new T[_capacity];
-    for (size_t i = 0; i < _size; i++)
-        data[i] = v[i];
+    memcpy(data, v.data, sizeof(T) * _capacity);
 }
 
 template <typename T>

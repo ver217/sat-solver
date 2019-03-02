@@ -11,7 +11,7 @@ class Vector {
   public:
     Vector();
     Vector(size_t n);
-    Vector(Vector<T>& v);
+    Vector(const Vector<T>& v);
     virtual ~Vector();
     void release();
     size_t size() const;
