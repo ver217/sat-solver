@@ -7,7 +7,7 @@
 class CnfContainer {
   public:
     size_t unit_cnt, clause_cnt;
-    BitMap unit_out, not_unit_out;
+    BitMap unit_out;
     VarMatrix data;
     BitMap mask;
     Vector<size_t> clause_size;

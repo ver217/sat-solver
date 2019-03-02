@@ -1,4 +1,5 @@
 #include "../include/cnfcontainer.h"
+#include <cmath>
 
 CnfContainer::CnfContainer() : unit_cnt(0), clause_cnt(0) {}
 
@@ -6,7 +7,6 @@ CnfContainer::CnfContainer(size_t unit_cnt, size_t clause_cnt, const Vector<size
     unit_cnt(unit_cnt),
     clause_cnt(clause_cnt),
     unit_out(unit_cnt),
-    not_unit_out(unit_cnt),
     data(cnt),
     mask(data.total()),
     clause_size(cnt) {
@@ -16,7 +16,6 @@ CnfContainer::CnfContainer(const CnfContainer& container) :
     unit_cnt(container.unit_cnt),
     clause_cnt(container.clause_cnt),
     unit_out(container.unit_out),
-    not_unit_out(unit_cnt),
     data(container.data),
     mask(container.mask),
     clause_size(container.clause_size) {
@@ -35,7 +34,7 @@ bool CnfContainer::has(size_t m, size_t n) {
 }
 
 void CnfContainer::set_unit(int unit) {
-    if ( (unit > 0 && !unit_out[unit]) || (unit < 0 && !not_unit_out[-unit]) ) {
+    if ( (unit > 0 && !unit_out[unit]) || (unit < 0 && !unit_out[-unit]) ) {
         for (size_t i = 0; i < data.length(); i++) {
             if (clause_size[i] > 0) {
                 size_t width = data.width(i);
@@ -49,11 +48,12 @@ void CnfContainer::set_unit(int unit) {
                     clause_cnt--;
             }
         }
+        unit_out.set(abs(unit));
     }
 }
 
 void CnfContainer::unset_unit(int unit) {
-    if ( (unit > 0 && unit_out[unit]) || (unit < 0 && not_unit_out[-unit]) ) {
+    if ( (unit > 0 && unit_out[unit]) || (unit < 0 && unit_out[-unit]) ) {
         for (size_t i = 0; i < data.length(); i++) {
             size_t width = data.width(i);
             size_t prev_size = clause_size[i];
@@ -68,6 +68,7 @@ void CnfContainer::unset_unit(int unit) {
                     clause_cnt++;
             }
         }
+        unit_out.unset(abs(unit));
     }
 }
 
