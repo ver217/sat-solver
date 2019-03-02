@@ -29,16 +29,14 @@ int main(int argc, char *argv[]) {
                 cnt_i++;
             cnt[i] = cnt_i;
         }
-        CnfContainer container(n_unit, n_clause, cnt);
+        CnfContainer cnf(n_unit, n_clause, cnt);
         f.seekg(0);
         getline(f, s);
         for (size_t i = 0; i < n_clause; i++) {
             int x, j = 0;
             while ((f >> x, x != 0))
-                container.data(i, j++) = x;
+                cnf.data(i, j++) = x;
         }
-        cout << container;
-        cnt.release();
-        container.release();
+        cout << cnf;
     }
 }

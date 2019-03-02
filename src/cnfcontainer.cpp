@@ -22,7 +22,8 @@ CnfContainer::CnfContainer(const CnfContainer& container) :
     clause_size(container.clause_size) {
 }
 
-CnfContainer::~CnfContainer() {}
+CnfContainer::~CnfContainer() {
+}
 
 void CnfContainer::release() {
     data.release();

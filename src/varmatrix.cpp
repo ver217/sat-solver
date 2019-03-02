@@ -21,7 +21,9 @@ VarMatrix::VarMatrix(const VarMatrix &matrix) : _length(matrix.length()), offset
     memcpy(data, matrix.data, sizeof(int) * matrix.total());
 }
 
-VarMatrix::~VarMatrix() {}
+VarMatrix::~VarMatrix() {
+    release();
+}
 
 void VarMatrix::release() {
     if (offsets) {

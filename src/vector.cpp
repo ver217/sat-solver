@@ -19,7 +19,9 @@ Vector<T>::Vector(const Vector<T>& v) : _size(v.size()), _capacity(v.capacity())
 }
 
 template <typename T>
-Vector<T>::~Vector() {};
+Vector<T>::~Vector() {
+    release();
+};
 
 template <typename T>
 void Vector<T>::release() {
