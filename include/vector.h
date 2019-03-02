@@ -9,6 +9,7 @@ class Vector {
     size_t _size, _capacity;
     T *data;
   public:
+    static const size_t npos = -1;
     Vector();
     Vector(size_t n);
     Vector(const Vector<T>& v);
