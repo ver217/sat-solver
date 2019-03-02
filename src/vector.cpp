@@ -69,5 +69,13 @@ const T& Vector<T>::pop_back() {
         throw "out of range";
 }
 
-template class Vector<int>;
+template <typename T>
+size_t Vector<T>::find(const T& x) {
+    for (size_t i = 0; i < _size; i++)
+        if (x == data[i])
+            return i;
+    return npos;
+}
+
+//template class Vector<int>;
 template class Vector<size_t>;
