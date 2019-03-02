@@ -2,7 +2,7 @@
 
 CnfContainer::CnfContainer() : unit_cnt(0), clause_cnt(0) {}
 
-CnfContainer::CnfContainer(size_t unit_cnt, size_t clause_cnt, Vector<size_t> &cnt) :
+CnfContainer::CnfContainer(size_t unit_cnt, size_t clause_cnt, const Vector<size_t> &cnt) :
     unit_cnt(unit_cnt),
     clause_cnt(clause_cnt),
     unit_out(unit_cnt),
@@ -25,9 +25,7 @@ CnfContainer::CnfContainer(const CnfContainer& container) :
 CnfContainer::~CnfContainer() {}
 
 void CnfContainer::release() {
-    delete &unit_out;
     data.release();
-    delete &mask;
     clause_size.release();
 }
 
@@ -70,4 +68,24 @@ void CnfContainer::unset_unit(int unit) {
             }
         }
     }
+}
+
+ostream& operator<<(ostream &out, const CnfContainer &container) {
+    for (size_t i = 0; i < container.clause_cnt; i++) {
+        size_t width = container.data.width(i);
+        out << '(';
+        for (size_t j = 0; j < width; j++) {
+            int unit = container.data(i, j);
+            if (unit > 0)
+                out << unit;
+            else if (unit < 0)
+                out << '~' << -unit;
+            if (j == width - 1)
+                out << ')';
+            else
+                out << " + ";
+        }
+        out << endl;
+    }
+    return out;
 }

@@ -45,6 +45,11 @@ T& Vector<T>::operator[](size_t idx) {
 }
 
 template <typename T>
+const T& Vector<T>::operator[](size_t idx) const {
+    return data[idx];
+}
+
+template <typename T>
 void Vector<T>::push_back(const T& x) {
     if (_size + 1 >= _capacity) {
         _capacity += INCREMENT;
