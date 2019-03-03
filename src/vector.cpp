@@ -57,8 +57,7 @@ void Vector<T>::push_back(const T& x) {
         _capacity += INCREMENT;
         data = (T*)realloc(data, _capacity * sizeof(T));
     }
-    data[_size - 1] = x;
-    _size++;
+    data[_size++] = x;
 }
 
 template <typename T>
@@ -70,12 +69,12 @@ const T& Vector<T>::pop_back() {
 }
 
 template <typename T>
-size_t Vector<T>::find(const T& x) {
+size_t Vector<T>::find(const T& x) const {
     for (size_t i = 0; i < _size; i++)
         if (x == data[i])
             return i;
     return npos;
 }
 
-//template class Vector<int>;
+template class Vector<int>;
 template class Vector<size_t>;

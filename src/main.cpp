@@ -1,5 +1,6 @@
 #include "../include/base.h"
 #include "../include/cnfcontainer.h"
+#include "../include/solver.h"
 #include <fstream>
 #include <string>
 using std::ifstream;
@@ -38,5 +39,9 @@ int main(int argc, char *argv[]) {
                 cnf.data(i, j++) = x;
         }
         cout << cnf;
+        cout << "gggggggggggg" << endl;
+        Solver solver(cnf);
+        cout << solver.DPLL() << endl;
+        solver.print_res(cout);
     }
 }

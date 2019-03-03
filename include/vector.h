@@ -21,5 +21,5 @@ class Vector {
     const T& operator[](size_t idx) const;
     void push_back(const T& x);
     const T& pop_back();
-    size_t find(const T& x);
+    size_t find(const T& x) const;
 };
