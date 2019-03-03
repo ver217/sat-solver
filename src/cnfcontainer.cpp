@@ -6,14 +6,14 @@ CnfContainer::CnfContainer() : unit_cnt(0), clause_cnt(0) {}
 CnfContainer::CnfContainer(size_t unit_cnt, size_t clause_cnt, const Vector<size_t> &cnt) :
     unit_cnt(unit_cnt),
     clause_cnt(clause_cnt),
-    unit_out(unit_cnt * 2),
+    unit_out(unit_cnt * 2 + 1),
     clause_out(clause_cnt),
     data(cnt),
     mask(data.total()),
     clause_size(cnt) {
 }
 
-CnfContainer::CnfContainer(const CnfContainer& container) :
+CnfContainer::CnfContainer(const CnfContainer &container) :
     unit_cnt(container.unit_cnt),
     clause_cnt(container.clause_cnt),
     unit_out(container.unit_out),
@@ -58,30 +58,28 @@ void CnfContainer::set_unit(int unit) {
     //}
     unit_out.set(unit + unit_cnt);
     for (size_t i = 0; i < data.length(); i++) {
-        if (!clause_out[i]) {
-            size_t width = data.width(i);
-            for (size_t j = 0; j < width; j++) {
-                if (unit == data(i, j)) {
-                    mask.set(data.get_idx(i, j));
+        size_t width = data.width(i);
+        for (size_t j = 0; j < width; j++) {
+            if (unit == data(i, j)) {
+                mask.set(data.get_idx(i, j));
+                if (!clause_out[i]) {
                     clause_out.set(i);
                     clause_cnt--;
-                    break;
                 }
+                break;
             }
         }
     }
     for (size_t i = 0; i < data.length(); i++) {
-        if (!clause_out[i]) {
-            size_t width = data.width(i);
-            for (size_t j = 0; j < width; j++) {
-                if (-unit == data(i, j)) {
-                    mask.set(data.get_idx(i, j));
-                    if (--clause_size[i] == 0) {
-                        clause_out.set(i);
-                        clause_cnt--;
-                    }
-                    break;
+        size_t width = data.width(i);
+        for (size_t j = 0; j < width; j++) {
+            if (-unit == data(i, j)) {
+                mask.set(data.get_idx(i, j));
+                if (--clause_size[i] == 0 && !clause_out[i]) {
+                    clause_out.set(i);
+                    clause_cnt--;
                 }
+                break;
             }
         }
     }
@@ -140,7 +138,7 @@ void CnfContainer::unset_unit(int unit) {
     }
 }
 
-ostream& operator<<(ostream &out, const CnfContainer &container) {
+ostream &operator<<(ostream &out, const CnfContainer &container) {
     for (size_t i = 0; i < container.clause_cnt; i++) {
         if (!container.clause_out[i]) {
             size_t width = container.data.width(i);
@@ -166,16 +164,26 @@ ostream& operator<<(ostream &out, const CnfContainer &container) {
 
 int CnfContainer::pick_unit() {
     for (size_t i = 0; i < clause_size.size(); i++) {
-        if (clause_size[i] == 1 && !clause_out[i])
-            return data(i, 0);
+        if (clause_size[i] == 1 && !clause_out[i]) {
+            size_t width = data.width(i);
+            for (size_t j = 0; j < width; j++) {
+                if (has(i, j))
+                    return data(i, j);
+            }
+        }
     }
     return 0;
 }
 
 bool CnfContainer::exist_unit(int literal) {
     for (size_t i = 0; i < clause_size.size(); i++) {
-        if (clause_size[i] == 1 && !clause_out[i] && literal == data(i, 0))
-            return true;
+        if (clause_size[i] == 1 && !clause_out[i]) {
+            size_t width = data.width(i);
+            for (size_t j = 0; j < width; j++) {
+                if (has(i, j) && literal == data(i, j))
+                    return true;
+            }
+        }
     }
     return false;
 }

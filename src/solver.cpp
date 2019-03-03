@@ -1,4 +1,6 @@
 #include "../include/solver.h"
+#include "../include/base.h"
+#include <time.h>
 
 Solver::Solver() {};
 
@@ -60,7 +62,7 @@ CnfContainer Solver::simplify(const CnfContainer& cnf, int literal) {
 bool Solver::DPLL() {
     if (cnf.clause_cnt == 0)
         return true;
-    int literal;
+    int literal = 0;
     while ((literal = cnf.pick_unit()) != 0) {
         if (cnf.exist_unit(-literal))
             return false;
@@ -73,7 +75,8 @@ bool Solver::DPLL() {
         return true;
     literal = cnf.pick_literal();
     cnf.set_unit(literal);
-    if (DPLL() == true)
+    track.push_back(literal);
+    if (DPLL())
         return true;
     else {
         int l;
@@ -82,7 +85,8 @@ bool Solver::DPLL() {
         cnf.unset_unit(literal);
     }
     cnf.set_unit(-literal);
-    if (DPLL() == true)
+    track.push_back(-literal);
+    if (DPLL())
         return true;
     else {
         int l;
@@ -93,13 +97,51 @@ bool Solver::DPLL() {
     return false;
 }
 
-void Solver::solve() {
-    DPLL();
+void Solver::solve(ostream& out) {
+    clock_t start = clock();
+    bool res = DPLL();
+    clock_t end = clock();
+    cout << "------------------" << endl;
+    cout << "------debug-------" << endl;
+    cout << "var cnt: " << cnf.unit_cnt << ", res cnt: " << track.size() << endl;
+    cout << "error: " << (res ^ check()) << endl;
+    cout << "------------------" << endl;
+    out << "s " << res << endl;
+    out << "v ";
+    if (!res)
+        out << endl;
+    else
+        print_res(out);
+    out << "t " << static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000 << endl;;
 }
 
 ostream& Solver::print_res(ostream& out) const {
-    for (size_t i = 0; i < track.size(); i++)
-        out << track[i] << ' ';
+    //out << "count: " << track.size() << endl;
+    for (int i = 1; i <= static_cast<int>(cnf.unit_cnt); i++) {
+        if (cnf.is_unit_out(i))
+            out << i << ' ';
+        else if (cnf.is_unit_out(-i))
+            out << -i << ' ';
+    }
     out << endl;
     return out;
+}
+
+bool Solver::check() const {
+    bool res = true;
+    for (size_t i = 0; i < cnf.data.length(); i++) {
+        size_t width = cnf.data.width(i);
+        bool find = false;
+        for (size_t j = 0; j < width; j++) {
+            if (track.find(cnf.data(i, j)) != Vector<int>::npos)
+                find = true;
+        }
+        if (!find) {
+            //for (size_t j = 0; j < width; j++)
+            //cout << cnf.data(i, j) << ' ';
+            //cout << endl;
+            res = false;
+        }
+    }
+    return res;
 }
