@@ -1,7 +1,7 @@
 #include "../include/bitmap.h"
-#include <iostream>
+#include <string.h>
 
-BitMap::BitMap() : nums(NULL), n_nums(0), size(0) {}
+BitMap::BitMap() : n_nums(0), nums(NULL), size(0) {}
 
 BitMap::BitMap(const unsigned int max) : size(max) {
     unsigned int n = max / N_BITS;
@@ -10,6 +10,11 @@ BitMap::BitMap(const unsigned int max) : size(max) {
     n_nums = n;
     for (unsigned int i = 0; i < n; ++i)
         nums[i] = 0;
+}
+
+BitMap::BitMap(const BitMap& bm) : n_nums(bm.n_nums), nums(NULL), size(bm.size) {
+    nums = new unsigned int[n_nums];
+    memcpy(nums, bm.nums, sizeof(unsigned int) * n_nums);
 }
 
 BitMap::~BitMap() {
