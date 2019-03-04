@@ -3,6 +3,8 @@
 #include "../include/solver.h"
 #include "../include/encoder.h"
 #include "../include/utils.h"
+#include "../include/sudoku.h"
+#include "../include/decoder.h"
 #include <fstream>
 #include <string>
 using std::ifstream;
@@ -11,11 +13,18 @@ using std::string;
 
 int main(int argc, char *argv[]) {
     if (argc == 2) {
-        //CnfContainer cnf(read_cnf_file(argv[1]));
-        //Solver solver(cnf);
-        //solver.solve(cout);
-        //cout << "check: " << solver.check() << endl;
+        cout << "Reading sudoku..." << endl;
         Encoder enc(argv[1]);
-        enc.to_file("gg.cnf");
+        cout << "Generate CNF..." << endl;
+        //enc.to_file("gg.cnf");
+        CnfContainer cnf(enc.to_cnf());
+        cout << "Solving SAT..." << endl;
+        Solver solver(cnf);
+        bool status = solver.solve(cout);
+        if (status) {
+            Vector<int> res(solver.get_res());
+            Sudoku sudoku(Decoder::decode(res));
+            cout << sudoku;
+        }
     }
 }

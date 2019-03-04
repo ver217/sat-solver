@@ -87,8 +87,27 @@ void Encoder::to_file(string filename) {
     f.close();
 }
 
-//CnfContainer Encoder::to_cnf() {
-//}
+CnfContainer Encoder::to_cnf() {
+    Vector<size_t> cnt(clause_cnt);
+    int cnt_i = 0;
+    for (size_t i = 0; i < res.size(); i++) {
+        if (res[i] == 0) {
+            cnt.push_back(cnt_i);
+            cnt_i = 0;
+        } else
+            cnt_i++;
+    }
+    CnfContainer cnf(var_cnt, clause_cnt, cnt);
+    size_t i = 0, j = 0;
+    for (size_t k = 0; k < res.size(); k++) {
+        if (res[k] == 0) {
+            j = 0;
+            i++;
+        } else
+            cnf.data(i, j++) = res[k];
+    }
+    return cnf;
+}
 
 void Encoder::cell_atleast_one() {
     for (size_t i = 1; i < 10; i++) {
@@ -218,8 +237,8 @@ void Encoder::square_atleast_one() {
                         int input_num = 81 * ((3 * i + x) - 1) + 9 * ((3 * j + y) - 1) + (z - 1) + 1;
                         res.push_back(input_num);
                     }
-                    res.push_back(0);
                 }
+                res.push_back(0);
             }
         }
     }

@@ -8,7 +8,7 @@ Vector<T>::Vector() : _size(0), _capacity(INIT_CAPACITY), data(NULL) {
 }
 
 template <typename T>
-Vector<T>::Vector(size_t n) : _size(n), _capacity(n + INCREMENT), data(NULL) {
+Vector<T>::Vector(size_t n) : _size(0), _capacity(n), data(NULL) {
     data = new T[_capacity];
 }
 

@@ -36,12 +36,12 @@ ostream& operator<<(ostream& out, const Sudoku& sudoku) {
         if (col == 3 || col == 6)
             out << "| ";
         else if (col == 9) {
+            out << endl;
             col = 0;
             row++;
             if (row == 3 || row == 6)
-                out << "- - - - - - - - - - -";
+                out << "- - - - - - - - - - -" << endl;
         }
     }
-    out << endl;
     return out;
 }
