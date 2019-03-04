@@ -18,6 +18,8 @@ Encoder::Encoder(string filename) : var_cnt(729) {
         if ('0' <= c && c <= '9')
             def[i++] = c;
     }
+    if (i != 81)
+        throw "Invalid sudoku file";
     f.close();
     for (i = 0; i < 81; i++) {
         if (col == 10) {
