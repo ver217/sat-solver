@@ -13,7 +13,8 @@ class Solver {
     bool DPLL(const CnfContainer& cnf);
     static CnfContainer simplify(const CnfContainer& cnf, int literal);
     bool DPLL();
-    void solve(ostream &out);
+    bool solve(ostream &out);
     ostream& print_res(ostream &out) const;
     bool check() const;
+    Vector<int> get_res();
 };

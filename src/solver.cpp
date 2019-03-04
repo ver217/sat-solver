@@ -97,7 +97,7 @@ bool Solver::DPLL() {
     return false;
 }
 
-void Solver::solve(ostream& out) {
+bool Solver::solve(ostream& out) {
     clock_t start = clock();
     bool res = DPLL();
     clock_t end = clock();
@@ -112,11 +112,11 @@ void Solver::solve(ostream& out) {
         out << endl;
     else
         print_res(out);
-    out << "t " << static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000 << endl;;
+    out << "t " << static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000 << endl;
+    return res;
 }
 
 ostream& Solver::print_res(ostream& out) const {
-    //out << "count: " << track.size() << endl;
     for (int i = 1; i <= static_cast<int>(cnf.unit_cnt); i++) {
         if (cnf.is_unit_out(i))
             out << i << ' ';
@@ -142,6 +142,17 @@ bool Solver::check() const {
             //cout << endl;
             res = false;
         }
+    }
+    return res;
+}
+
+Vector<int> Solver::get_res() {
+    Vector<int> res;
+    for (int i = 1; i <= static_cast<int>(cnf.unit_cnt); i++) {
+        if (cnf.is_unit_out(i))
+            res.push_back(i);
+        else if (cnf.is_unit_out(-i))
+            res.push_back(-i);
     }
     return res;
 }
