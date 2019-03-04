@@ -11,9 +11,11 @@ using std::string;
 
 int main(int argc, char *argv[]) {
     if (argc == 2) {
-        CnfContainer cnf(read_cnf_file(argv[1]));
-        Solver solver(cnf);
-        solver.solve(cout);
+        //CnfContainer cnf(read_cnf_file(argv[1]));
+        //Solver solver(cnf);
+        //solver.solve(cout);
         //cout << "check: " << solver.check() << endl;
+        Encoder enc(argv[1]);
+        enc.to_file("gg.cnf");
     }
 }

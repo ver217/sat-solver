@@ -2,18 +2,30 @@
 #include "../include/base.h"
 #include <fstream>
 using std::ofstream;
+using std::ifstream;
 
 Encoder::Encoder() : var_cnt(0), clause_cnt(0) {}
 
-Encoder::Encoder(string def) : var_cnt(729) {
+Encoder::Encoder(string filename) : var_cnt(729) {
     size_t cnt = 0, row = 1, col = 1;
-    for (size_t i = 0; i < def.size(); i++) {
+    char def[81];
+    ifstream f(filename);
+    if (!f)
+        throw "No such file";
+    char c;
+    size_t i = 0;
+    while ((f >> c, !f.eof())) {
+        if ('0' <= c && c <= '9')
+            def[i++] = c;
+    }
+    f.close();
+    for (i = 0; i < 81; i++) {
         if (col == 10) {
             row++;
             col = 1;
         }
         int num = def[i] - '0';
-        if (def[i] != 0) {
+        if (num != 0) {
             int input_num = 81 * (row - 1) + 9 * (col - 1) + num;
             res.push_back(input_num);
             res.push_back(0);

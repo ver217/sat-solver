@@ -19,7 +19,7 @@ class Encoder {
     void square_atleast_one();
   public:
     Encoder();
-    Encoder(string def);
+    Encoder(string filename);
     Encoder(const Vector<int>& def);
     virtual ~Encoder();
     void to_file(string filename);

@@ -31,5 +31,6 @@ CnfContainer read_cnf_file(string filename) {
         while ((f >> x, x != 0))
             cnf.data(i, j++) = x;
     }
+    f.close();
     return cnf;
 }
