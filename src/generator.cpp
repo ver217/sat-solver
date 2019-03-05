@@ -1,5 +1,6 @@
 #include "../include/generator.h"
 #include <stdlib.h>
+#include <time.h>
 
 bool SudokuGenerator::row_conflict(int i, int num, const Sudoku& sudoku)
 {
@@ -61,6 +62,7 @@ bool SudokuGenerator::fill(int i, int j, Sudoku& sudoku)
 
 Sudoku SudokuGenerator::generate(uint n_holes)
 {
+    srand(time(0));
     Sudoku sudoku;
     for (size_t k = 0; k < size; k += sqrt_size) {
         int num;

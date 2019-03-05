@@ -1,20 +1,25 @@
 #include "../include/bitmap.h"
 #include <string.h>
 
-BitMap::BitMap() : n_nums(0), nums(NULL), size(0) {}
+BitMap::BitMap() : n_nums(0), nums(NULL), bias(0), size(0) {}
 
-BitMap::BitMap(const unsigned int max) : size(max) {
-    unsigned int n = max / N_BITS;
-    n += max % N_BITS == 0 ? 0 : 1;
-    nums = new unsigned int[n];
-    n_nums = n;
-    for (unsigned int i = 0; i < n; ++i)
-        nums[i] = 0;
+BitMap::BitMap(uint max) : bias(0), size(max + 1) {
+    n_nums = size / N_BITS;
+    n_nums += size % N_BITS == 0 ? 0 : 1;
+    nums = new uint[n_nums];
+    memset(nums, 0, sizeof(uint) * n_nums);
 }
 
-BitMap::BitMap(const BitMap& bm) : n_nums(bm.n_nums), nums(NULL), size(bm.size) {
-    nums = new unsigned int[n_nums];
-    memcpy(nums, bm.nums, sizeof(unsigned int) * n_nums);
+BitMap::BitMap(const BitMap& bm) : n_nums(bm.n_nums), nums(NULL), bias(bm.bias), size(bm.size) {
+    nums = new uint[n_nums];
+    memcpy(nums, bm.nums, sizeof(uint) * n_nums);
+}
+
+BitMap::BitMap(int min, int max) : bias(min), size(max - min + 1) {
+    n_nums = size / N_BITS;
+    n_nums += size % N_BITS == 0 ? 0 : 1;
+    nums = new uint[n_nums];
+    memset(nums, 0, sizeof(uint) * n_nums);
 }
 
 BitMap::~BitMap() {
@@ -24,14 +29,16 @@ BitMap::~BitMap() {
     }
 }
 
-void BitMap::set(const unsigned int pos) {
+void BitMap::set(int pos) {
+    pos -= bias;
     unsigned int idx = pos / N_BITS;
     unsigned int offset = pos % N_BITS;
     if (idx < n_nums)
         nums[idx] |= (1 << offset);
 }
 
-void BitMap::unset(const unsigned int pos) {
+void BitMap::unset(int pos) {
+    pos -= bias;
     unsigned int idx = pos / N_BITS;
     unsigned int offset = pos % N_BITS;
     if (idx < n_nums)
@@ -39,11 +46,11 @@ void BitMap::unset(const unsigned int pos) {
 }
 
 void BitMap::clear() {
-    for (unsigned int i = 0; i < size; ++i)
-        nums[i] = 0;
+    memset(nums, 0, sizeof(uint) * n_nums);
 }
 
-bool BitMap::operator[](const unsigned int pos) const {
+bool BitMap::operator[](int pos) const {
+    pos -= bias;
     unsigned int idx = pos / N_BITS;
     unsigned int offset = pos % N_BITS;
     if (idx < n_nums)

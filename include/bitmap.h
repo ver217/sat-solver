@@ -2,17 +2,19 @@
 #include "types.h"
 
 class BitMap {
-    static const unsigned int N_BITS = sizeof(unsigned int) * 8;
-    unsigned int n_nums;
-    unsigned int *nums;
+    static const uint N_BITS = sizeof(uint) * 8;
+    uint n_nums;
+    uint *nums;
+    int bias;
   public:
-    unsigned int size;
+    uint size;
     BitMap();
-    BitMap(const unsigned int max);
+    BitMap(uint max);
+    BitMap(int min, int max);
     BitMap(const BitMap& bm);
     virtual ~BitMap();
-    void set(const unsigned int pos);
-    void unset(const unsigned int pos);
+    void set(int pos);
+    void unset(int pos);
     void clear();
-    bool operator[](const unsigned int pos) const;
+    bool operator[](int pos) const;
 };

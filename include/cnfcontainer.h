@@ -19,7 +19,6 @@ class CnfContainer {
     bool has(size_t m, size_t n) const;
     void set_unit(int unit);
     void unset_unit(int unit);
-    bool is_unit_out(int unit) const;
     friend ostream& operator<<(ostream &out, const CnfContainer &container);
     int pick_unit();
     bool exist_unit(int literal);
