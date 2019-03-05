@@ -1,5 +1,6 @@
 #include "../include/cnfcontainer.h"
 #include <cmath>
+#include "base.h"
 
 CnfContainer::CnfContainer() : unit_cnt(0), clause_cnt(0) {}
 
@@ -24,6 +25,7 @@ CnfContainer::CnfContainer(const CnfContainer &container) :
 }
 
 CnfContainer::~CnfContainer() {
+    cout << "~Cnf()" << endl;
 }
 
 void CnfContainer::release() {

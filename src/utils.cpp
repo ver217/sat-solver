@@ -21,7 +21,7 @@ CnfContainer read_cnf_file(string filename) {
         int x, cnt_i = 0;
         while ((f >> x, x != 0))
             cnt_i++;
-        cnt[i] = cnt_i;
+        cnt.push_back(cnt_i);
     }
     CnfContainer cnf(n_unit, n_clause, cnt);
     f.seekg(pos);

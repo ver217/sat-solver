@@ -2,8 +2,8 @@
 
 Sudoku::Sudoku() {}
 
-
-Sudoku::Sudoku(const Vector<int>& nums) {
+Sudoku::Sudoku(const Vector<int>& nums)
+{
     if (nums.size() == 81) {
         for (size_t i = 0; i < 81; i++)
             data[i] = nums[i];
@@ -12,22 +12,26 @@ Sudoku::Sudoku(const Vector<int>& nums) {
 
 Sudoku::~Sudoku() {}
 
-int& Sudoku::operator()(size_t i, size_t j) {
+int& Sudoku::operator()(size_t i, size_t j)
+{
     return data[i * 9 + j];
 }
 
-int Sudoku::operator()(size_t i, size_t j) const {
+int Sudoku::operator()(size_t i, size_t j) const
+{
     return data[i * 9 + j];
 }
 
-Vector<int> Sudoku::to_vector() {
+Vector<int> Sudoku::to_vector()
+{
     Vector<int> nums(81);
     for (size_t i = 0; i < 81; i++)
         nums[i] = data[i];
     return nums;
 }
 
-ostream& operator<<(ostream& out, const Sudoku& sudoku) {
+ostream& operator<<(ostream& out, const Sudoku& sudoku)
+{
     int col = 0, row = 0;
     for (size_t i = 0; i < 81; i++) {
         int cell = sudoku.data[i];
