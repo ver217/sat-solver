@@ -1,6 +1,9 @@
 #include "../include/sudoku.h"
+#include <string.h>
 
-Sudoku::Sudoku() {}
+Sudoku::Sudoku() {
+    memset(&data, 0, sizeof(int) * 81);
+}
 
 Sudoku::Sudoku(const Vector<int>& nums)
 {

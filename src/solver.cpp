@@ -4,7 +4,7 @@
 
 Solver::Solver() {};
 
-Solver::Solver(const CnfContainer& cnf) : cnf(cnf) {}
+Solver::Solver(const CnfContainer &cnf) : cnf(cnf) {}
 
 Solver::~Solver() {};
 
@@ -46,19 +46,19 @@ bool Solver::DPLL() {
     return false;
 }
 
-bool Solver::solve(ostream& out) {
+bool Solver::solve(ostream &out) {
     clock_t start = clock();
     bool res = DPLL();
     clock_t end = clock();
-    cout << "------------------" << endl;
-    cout << "------debug-------" << endl;
-    cout << "var cnt: " << cnf.unit_cnt << ", res cnt: " << track.size() << endl;
-    cout << "error: " << (res ^ check()) << endl;
-    cout << "track: ";
-    for (size_t i = 0; i < track.size(); i++)
-        cout << track[i] << ' ';
-    cout << endl;
-    cout << "------------------" << endl;
+//    cout << "------------------" << endl;
+//    cout << "------debug-------" << endl;
+//    cout << "var cnt: " << cnf.unit_cnt << ", res cnt: " << track.size() << endl;
+//    cout << "error: " << (res ^ check()) << endl;
+//    cout << "track: ";
+//    for (size_t i = 0; i < track.size(); i++)
+//        cout << track[i] << ' ';
+//    cout << endl;
+//    cout << "------------------" << endl;
     out << "s " << res << endl;
     out << "v ";
     if (!res)
@@ -69,7 +69,11 @@ bool Solver::solve(ostream& out) {
     return res;
 }
 
-ostream& Solver::print_res(ostream& out) const {
+bool Solver::solve() {
+    return DPLL();
+}
+
+ostream &Solver::print_res(ostream &out) const {
     for (int i = 1; i <= static_cast<int>(cnf.unit_cnt); i++) {
         if (cnf.unit_out[i])
             out << i << ' ';

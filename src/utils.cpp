@@ -4,6 +4,8 @@ using std::ifstream;
 
 CnfContainer read_cnf_file(string filename) {
     ifstream f(filename);
+    if (!f)
+        throw "No such file";
     string s;
     f >> s;
     while (s != "p") {

@@ -5,11 +5,13 @@
 template <typename T>
 Vector<T>::Vector() : _size(0), _capacity(INIT_CAPACITY), data(NULL) {
     data = new T[_capacity];
+    memset(data, 0, sizeof(T) * _capacity);
 }
 
 template <typename T>
 Vector<T>::Vector(size_t n) : _size(0), _capacity(n), data(NULL) {
     data = new T[_capacity];
+    memset(data, 0, sizeof(T) * _capacity);
 }
 
 template <typename T>

@@ -12,6 +12,7 @@ class Solver {
     virtual ~Solver();
     bool DPLL();
     bool solve(ostream &out);
+    bool solve();
     ostream& print_res(ostream &out) const;
     bool check() const;
     Vector<int> get_res();

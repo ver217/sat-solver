@@ -12,6 +12,7 @@ VarMatrix::VarMatrix(const Vector<size_t> &cnt) : _length(cnt.size()), offsets(n
         offsets[i + 1] = total;
     }
     data = new int[total];
+    memset(data, 0, sizeof(int) * total);
 }
 
 VarMatrix::VarMatrix(const VarMatrix &matrix) : _length(matrix.length()), offsets(nullptr), data(nullptr) {
