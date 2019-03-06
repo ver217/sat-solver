@@ -81,16 +81,15 @@ ostream &Solver::print_res(ostream &out) const {
 }
 
 bool Solver::check() const {
-    bool res = true;
     for (size_t i = 0; i < cnf.data.length(); i++) {
         size_t width = cnf.data.width(i);
         bool line = false;
         for (size_t j = 0; j < width; j++)
             line |= cnf.unit_out[cnf.data[i][j]];
         if (!line)
-            break;
+            return false;
     }
-    return res;
+    return true;
 }
 
 Vector<int> Solver::get_res() const {

@@ -135,17 +135,8 @@ int CnfContainer::pick_unit() {
         for (size_t j = 0; j < width; j++)
             if (!mask[i][j])
                 return data[i][j];
-        throw "pick unit ERROR!!!!";
+        throw "pick unit ERROR!!!!"; // TODO: delete this throw will speed up
     }
-//    for (size_t i = 0; i < clause_size.size(); i++) {
-//        if (clause_size[i] == 1 && !clause_out[i]) {
-//            size_t width = data.width(i);
-//            for (size_t j = 0; j < width; j++) {
-//                if (has(i, j))
-//                    return data[i][j];
-//            }
-//        }
-//    }
     return 0;
 }
 
@@ -163,15 +154,6 @@ bool CnfContainer::exist_unit(int literal) {
             node = node->next;
         }
     }
-//    for (size_t i = 0; i < clause_size.size(); i++) {
-//        if (clause_size[i] == 1 && !clause_out[i]) {
-//            size_t width = data.width(i);
-//            for (size_t j = 0; j < width; j++) {
-//                if (has(i, j) && literal == data[i][j])
-//                    return true;
-//            }
-//        }
-//    }
     return false;
 }
 
@@ -191,5 +173,4 @@ int CnfContainer::pick_literal() {
         if (has(min_size_idx, j))
             return data[min_size_idx][j];
     throw "pick literal ERROR!!!!";
-//    return 0;
 }

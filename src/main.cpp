@@ -37,6 +37,11 @@ int main() {
         cout << "------------------" << endl;
         cout << "  Choose operation [0~2]: ";
         cin >> op;
+        if (cin.fail()) {
+            cin.clear();
+            cin.get();
+            op = -1;
+        }
         switch (op) {
         case 1: {
             cout << "Generating Sudoku..." << endl;
@@ -50,9 +55,15 @@ int main() {
                 cout << "  1. Dump CNF File" << endl;
                 cout << "  2. Solve Sudoku" << endl;
                 cout << "  3. Dump and Solve" << endl;
+                cout << "  0. Exit   " << endl;
                 cout << "------------------" << endl;
-                cout << "  Choose operation [1~3]: ";
+                cout << "  Choose operation [0~3]: ";
                 cin >> op1;
+                if (cin.fail()) {
+                    cin.clear();
+                    cin.get();
+                    op1 = -1;
+                }
                 switch (op1) {
                 case 1: {
                     string filename;
@@ -105,6 +116,8 @@ int main() {
                     getchar();
                     break;
                 }
+                case 0:
+                    break;
                 default: {
                     op1 = 1;
                     break;
@@ -132,6 +145,10 @@ int main() {
         }
         case 0:
             break;
+        default: {
+            op = 1;
+            break;
+        }
         }
     }
     cout << "Bye~" << endl;
