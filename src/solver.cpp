@@ -50,15 +50,15 @@ bool Solver::solve(ostream &out) {
     clock_t start = clock();
     bool res = DPLL();
     clock_t end = clock();
-//    cout << "------------------" << endl;
-//    cout << "------debug-------" << endl;
-//    cout << "var cnt: " << cnf.unit_cnt << ", res cnt: " << track.size() << endl;
-//    cout << "error: " << (res ^ check()) << endl;
+    cout << "------------------" << endl;
+    cout << "------debug-------" << endl;
+    cout << "var cnt: " << cnf.unit_cnt << ", res cnt: " << track.size() << endl;
+    cout << "error: " << (res ^ check()) << endl;
 //    cout << "track: ";
 //    for (size_t i = 0; i < track.size(); i++)
 //        cout << track[i] << ' ';
 //    cout << endl;
-//    cout << "------------------" << endl;
+    cout << "------------------" << endl;
     out << "s " << res << endl;
     out << "v ";
     if (!res)

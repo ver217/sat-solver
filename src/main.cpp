@@ -62,7 +62,7 @@ int main() {
                     enc.to_file(filename);
                     cout << "Done~" << endl;
                     op1 = 0;
-                    cout << "Press any key to continue ";
+                    cout << "Press enter to continue ";
                     getchar();
                     getchar();
                     break;
@@ -78,7 +78,7 @@ int main() {
                         cout << sudoku_sol;
                     }
                     op1 = 0;
-                    cout << "Press any key to continue ";
+                    cout << "Press enter to continue ";
                     getchar();
                     getchar();
                     break;
@@ -100,7 +100,7 @@ int main() {
                         cout << sudoku_sol;
                     }
                     op1 = 0;
-                    cout << "Press any key to continue ";
+                    cout << "Press enter to continue ";
                     getchar();
                     getchar();
                     break;
@@ -125,7 +125,7 @@ int main() {
             } catch (const char *const msg) {
                 cout << msg << endl;
             }
-            cout << "Press any key to continue ";
+            cout << "Press enter to continue ";
             getchar();
             getchar();
             break;

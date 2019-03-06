@@ -154,15 +154,24 @@ bool CnfContainer::exist_unit(int literal) {
 }
 
 int CnfContainer::pick_literal() {
+    size_t min_size = static_cast<size_t>(-1);
+    size_t min_size_idx = min_size;
     for (size_t i = 0; i < data.length(); i++) {
         if (!clause_out[i]) {
-            size_t width = data.width(i);
-            for (size_t j = 0; j < width; j++) {
-                if (has(i, j))
-                    return data(i, j);
+            if (clause_size[i] < min_size) {
+                min_size = clause_size[i];
+                min_size_idx = i;
             }
+//            for (size_t j = 0; j < width; j++) {
+//                if (has(i, j))
+//                    return data(i, j);
+//            }
         }
     }
+    size_t min_width = data.width(min_size_idx);
+    for (size_t j = 0; j < min_width; j++)
+        if (has(min_size_idx, j))
+            return data(min_size_idx, j);
     return 0;
 }
 
