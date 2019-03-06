@@ -76,7 +76,7 @@ void CnfContainer::unset_unit(int unit) {
                 if (unit == data(i, j)) {
                     find = true;
                     mask.unset(data.get_idx(i, j));
-                } else if (unit_out[data(i, j)]) // TODO
+                } else if (unit_out[data(i, j)])
                     recover = false;
             }
             if (find && recover) {
@@ -87,15 +87,16 @@ void CnfContainer::unset_unit(int unit) {
     }
     for (size_t i = 0; i < data.length(); i++) {
         size_t width = data.width(i);
-        bool recover = true;
+        bool recover = true, find = false;
         for (size_t j = 0; j < width; j++) {
             if (-unit == data(i, j)) {
+                find = true;
                 mask.unset(data.get_idx(i, j));
                 ++clause_size[i];
-            } else if (unit_out[data(i, j)]) // TODO
+            } else if (unit_out[data(i, j)])
                 recover = false;
         }
-        if (recover && clause_out[i] && clause_size[i] == width) {
+        if (find && recover && clause_out[i] && clause_size[i] == 1) { // TODO: prev clause_size[i] == width and no find
             clause_out.unset(i);
             clause_cnt++;
         }
@@ -163,4 +164,123 @@ int CnfContainer::pick_literal() {
         }
     }
     return 0;
+}
+
+OptimCnf::OptimCnf() : shortest_clause_idx(static_cast<size_t>(-1)) {}
+
+OptimCnf::OptimCnf(size_t unit_cnt, size_t clause_cnt, const Vector<size_t> &cnt)
+        : CnfContainer(unit_cnt, clause_cnt, cnt) {
+    size_t min = static_cast<size_t>(-1);
+    for (size_t i = 0; i < clause_size.size(); i++) {
+        if (clause_size[i] == 1)
+            unit_clauses.push_back(i);
+        else if (clause_size[i] > 1 && clause_size[i] < min)
+            shortest_clause_idx = i;
+    }
+}
+
+OptimCnf::OptimCnf(const OptimCnf& cnf)
+        : CnfContainer(cnf),
+          shortest_clause_idx(cnf.shortest_clause_idx),
+          unit_clauses(cnf.unit_clauses) {
+}
+
+OptimCnf::~OptimCnf() {}
+
+void OptimCnf::set_unit(int unit) {
+    unit_out.set(unit);
+    for (size_t i = 0; i < data.length(); i++) {
+        size_t width = data.width(i);
+        for (size_t j = 0; j < width; j++) {
+            if (unit == data(i, j)) {
+                mask.set(data.get_idx(i, j));
+                if (!clause_out[i]) {
+                    clause_out.set(i);
+                    clause_cnt--;
+                    if (clause_size[i] == 1)
+                        unit_clauses.remove_first(i);
+                }
+                break;
+            }
+        }
+    }
+    for (size_t i = 0; i < data.length(); i++) {
+        size_t width = data.width(i);
+        for (size_t j = 0; j < width; j++) {
+            if (-unit == data(i, j)) {
+                mask.set(data.get_idx(i, j));
+                if (--clause_size[i] == 0 && !clause_out[i]) {
+                    clause_out.set(i);
+                    clause_cnt--;
+                    unit_clauses.remove_first(i);
+                } else if (clause_size[i] == 1)
+                    unit_clauses.push_back(i);
+                break;
+            }
+        }
+    }
+}
+
+void OptimCnf::unset_unit(int unit) {
+    unit_out.unset(unit);
+    for (size_t i = 0; i < data.length(); i++) {
+        if (clause_out[i]) {
+            size_t width = data.width(i);
+            bool recover = true, find = false;
+            for (size_t j = 0; j < width; j++) {
+                if (unit == data(i, j)) {
+                    find = true;
+                    mask.unset(data.get_idx(i, j));
+                } else if (unit_out[data(i, j)])
+                    recover = false;
+            }
+            if (find && recover) {
+                clause_out.unset(i);
+                clause_cnt++;
+                if (clause_size[i] == 1)
+                    unit_clauses.push_back(i);
+            }
+        }
+    }
+    for (size_t i = 0; i < data.length(); i++) {
+        size_t width = data.width(i);
+        bool recover = true, find = false;
+        size_t prev_clause_size = clause_size[i];
+        for (size_t j = 0; j < width; j++) {
+            if (-unit == data(i, j)) {
+                find = true;
+                mask.unset(data.get_idx(i, j));
+                ++clause_size[i];
+            } else if (unit_out[data(i, j)])
+                recover = false;
+        }
+        if (find && recover && clause_out[i] && clause_size[i] == 1) {
+            clause_out.unset(i);
+            clause_cnt++;
+            unit_clauses.push_back(i);
+        } else if (find && !clause_out[i] && prev_clause_size == 1 && clause_size[i] > 1)
+            unit_clauses.remove_first(i);
+    }
+}
+
+int OptimCnf::pick_unit() {
+    if (unit_clauses.size() > 0) {
+        size_t i = unit_clauses.pop_back();
+        size_t width = data.width(i);
+        for (size_t j = 0; j < width; j++)
+            if (has(i, j))
+                return data(i, j);
+    }
+    return 0;
+}
+
+bool OptimCnf::exist_unit(int literal) {
+    for (size_t k = 0; k < unit_clauses.size(); k++) {
+        size_t i = unit_clauses[k];
+        size_t width = data.width(i);
+        for (size_t j = 0; j < width; j++)
+            if (has(i, j) && data(i, j) == literal)
+                return true;
+    }
+    return false;
 }

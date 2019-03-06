@@ -97,7 +97,7 @@ bool Solver::check() const {
     return res;
 }
 
-Vector<int> Solver::get_res() {
+Vector<int> Solver::get_res() const {
     Vector<int> res;
     for (int i = 1; i <= static_cast<int>(cnf.unit_cnt); i++) {
         if (cnf.unit_out[i])

@@ -78,5 +78,17 @@ size_t Vector<T>::find(const T& x) const {
     return npos;
 }
 
+template <typename T>
+void Vector<T>::remove_first(const T& x) {
+    size_t i = 0;
+    while (i < _size && data[i] != x)
+        i++;
+    if (i < _size)
+        _size--;
+    for (; i < _size; i++)
+        data[i] = data[i + 1];
+}
+
+
 template class Vector<int>;
 template class Vector<size_t>;

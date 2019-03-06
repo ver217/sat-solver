@@ -22,4 +22,5 @@ class Vector {
     void push_back(const T& x);
     const T& pop_back();
     size_t find(const T& x) const;
+    void remove_first(const T& x);
 };
