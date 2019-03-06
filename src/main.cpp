@@ -38,101 +38,101 @@ int main() {
         cout << "  Choose operation [0~2]: ";
         cin >> op;
         switch (op) {
-            case 1: {
-                cout << "Generating Sudoku..." << endl;
-                Sudoku sudoku(SudokuGenerator::generate(64));
-                Encoder enc(sudoku.to_vector());
-                int op1 = 1;
-                while (op1) {
-                    clear();
-                    cout << sudoku << endl;
-                    cout << "------------------" << endl;
-                    cout << "  1. Dump CNF File" << endl;
-                    cout << "  2. Solve Sudoku" << endl;
-                    cout << "  3. Dump and Solve" << endl;
-                    cout << "------------------" << endl;
-                    cout << "  Choose operation [1~3]: ";
-                    cin >> op1;
-                    switch (op1) {
-                        case 1: {
-                            string filename;
-                            cout << "Input filename: ";
-                            cin >> filename;
-                            cout << "Generate CNF..." << endl;
-                            enc.to_file(filename);
-                            cout << "Done~" << endl;
-                            op1 = 0;
-                            cout << "Press any key to continue ";
-                            getchar();
-                            getchar();
-                            break;
-                        }
-                        case 2: {
-                            CnfContainer cnf(enc.to_cnf());
-                            cout << "Solving SAT..." << endl;
-                            Solver solver(cnf);
-                            bool status = solver.solve();
-                            if (status) {
-                                Vector<int> res(solver.get_res());
-                                Sudoku sudoku_sol(Decoder::decode(res));
-                                cout << sudoku_sol;
-                            }
-                            op1 = 0;
-                            cout << "Press any key to continue ";
-                            getchar();
-                            getchar();
-                            break;
-                        }
-                        case 3: {
-                            string filename;
-                            cout << "Input filename: ";
-                            cin >> filename;
-                            cout << "Generate CNF..." << endl;
-                            enc.to_file(filename);
-                            cout << "Done~" << endl;
-                            CnfContainer cnf(enc.to_cnf());
-                            cout << "Solving SAT..." << endl;
-                            Solver solver(cnf);
-                            bool status = solver.solve();
-                            if (status) {
-                                Vector<int> res(solver.get_res());
-                                Sudoku sudoku_sol(Decoder::decode(res));
-                                cout << sudoku_sol;
-                            }
-                            op1 = 0;
-                            cout << "Press any key to continue ";
-                            getchar();
-                            getchar();
-                            break;
-                        }
-                        default: {
-                            op1 = 1;
-                            break;
-                        }
-                    }
+        case 1: {
+            cout << "Generating Sudoku..." << endl;
+            Sudoku sudoku(SudokuGenerator::generate(64));
+            Encoder enc(sudoku.to_vector());
+            int op1 = 1;
+            while (op1) {
+                clear();
+                cout << sudoku << endl;
+                cout << "------------------" << endl;
+                cout << "  1. Dump CNF File" << endl;
+                cout << "  2. Solve Sudoku" << endl;
+                cout << "  3. Dump and Solve" << endl;
+                cout << "------------------" << endl;
+                cout << "  Choose operation [1~3]: ";
+                cin >> op1;
+                switch (op1) {
+                case 1: {
+                    string filename;
+                    cout << "Input filename: ";
+                    cin >> filename;
+                    cout << "Generate CNF..." << endl;
+                    enc.to_file(filename);
+                    cout << "Done~" << endl;
+                    op1 = 0;
+                    cout << "Press any key to continue ";
+                    getchar();
+                    getchar();
+                    break;
                 }
-                break;
-            }
-            case 2: {
-                string filename;
-                cout << "Input filename: ";
-                cin >> filename;
-                try {
-                    CnfContainer cnf(read_cnf_file(filename));
+                case 2: {
+                    CnfContainer cnf(enc.to_cnf());
+                    cout << "Solving SAT..." << endl;
                     Solver solver(cnf);
-                    solver.solve(cout);
-                } catch (const char *const msg) {
-                    cout << msg << endl;
+                    bool status = solver.solve();
+                    if (status) {
+                        Vector<int> res(solver.get_res());
+                        Sudoku sudoku_sol(Decoder::decode(res));
+                        cout << sudoku_sol;
+                    }
+                    op1 = 0;
+                    cout << "Press any key to continue ";
+                    getchar();
+                    getchar();
+                    break;
                 }
-                cout << "Press any key to continue ";
-                getchar();
-                getchar();
-                break;
+                case 3: {
+                    string filename;
+                    cout << "Input filename: ";
+                    cin >> filename;
+                    cout << "Generate CNF..." << endl;
+                    enc.to_file(filename);
+                    cout << "Done~" << endl;
+                    CnfContainer cnf(enc.to_cnf());
+                    cout << "Solving SAT..." << endl;
+                    Solver solver(cnf);
+                    bool status = solver.solve();
+                    if (status) {
+                        Vector<int> res(solver.get_res());
+                        Sudoku sudoku_sol(Decoder::decode(res));
+                        cout << sudoku_sol;
+                    }
+                    op1 = 0;
+                    cout << "Press any key to continue ";
+                    getchar();
+                    getchar();
+                    break;
+                }
+                default: {
+                    op1 = 1;
+                    break;
+                }
+                }
             }
-            case 0:
-                break;
+            break;
+        }
+        case 2: {
+            string filename;
+            cout << "Input filename: ";
+            cin >> filename;
+            try {
+                CnfContainer cnf(read_cnf_file(filename));
+                cout << "Solving SAT..." << endl;
+                Solver solver(cnf);
+                solver.solve(cout);
+            } catch (const char *const msg) {
+                cout << msg << endl;
+            }
+            cout << "Press any key to continue ";
+            getchar();
+            getchar();
+            break;
+        }
+        case 0:
+            break;
         }
     }
     cout << "Bye~" << endl;
 }
-

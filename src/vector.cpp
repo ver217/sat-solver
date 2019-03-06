@@ -9,7 +9,7 @@ Vector<T>::Vector() : _size(0), _capacity(INIT_CAPACITY), data(NULL) {
 }
 
 template <typename T>
-Vector<T>::Vector(size_t n) : _size(0), _capacity(n), data(NULL) {
+Vector<T>::Vector(size_t n) : _size(n), _capacity(n), data(NULL) {
     data = new T[_capacity];
     memset(data, 0, sizeof(T) * _capacity);
 }
@@ -55,7 +55,7 @@ const T& Vector<T>::operator[](size_t idx) const {
 
 template <typename T>
 void Vector<T>::push_back(const T& x) {
-    if (_size + 1 >= _capacity) {
+    if (_size >= _capacity) {
         _capacity += INCREMENT;
         data = (T*)realloc(data, _capacity * sizeof(T));
     }

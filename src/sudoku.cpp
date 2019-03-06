@@ -29,7 +29,7 @@ Vector<int> Sudoku::to_vector()
 {
     Vector<int> nums(81);
     for (size_t i = 0; i < 81; i++)
-        nums.push_back(data[i]);
+        nums[i] = data[i];
     return nums;
 }
 

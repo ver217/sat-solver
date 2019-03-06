@@ -78,8 +78,6 @@ Sudoku SudokuGenerator::generate(uint n_holes)
         size_t id = rand() % (size * size);
         size_t i = id / size;
         size_t j = id % size;
-        if (j != 0)
-            j = j - 1;
         if (sudoku(i, j) != 0) {
             n_holes--;
             sudoku(i, j) = 0;

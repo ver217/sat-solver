@@ -92,9 +92,10 @@ void Encoder::to_file(string filename) {
 CnfContainer Encoder::to_cnf() {
     Vector<size_t> cnt(clause_cnt);
     int cnt_i = 0;
+    size_t idx = 0;
     for (size_t i = 0; i < res.size(); i++) {
         if (res[i] == 0) {
-            cnt.push_back(cnt_i);
+            cnt[idx++] = cnt_i;
             cnt_i = 0;
         } else
             cnt_i++;
