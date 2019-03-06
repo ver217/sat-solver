@@ -8,9 +8,9 @@ class Solver {
     Vector<int> track;
     bool DPLL();
   public:
-    Solver();
+    Solver() = default;
     Solver(const CnfContainer& cnf);
-    virtual ~Solver();
+    virtual ~Solver() = default;
     bool solve(ostream &out);
     bool solve();
     ostream& print_res(ostream &out) const;

@@ -1,8 +1,8 @@
 #pragma once
 #include "types.h"
 
-const size_t INIT_CAPACITY = 30;
-const size_t INCREMENT = 20;
+const size_t INIT_CAPACITY = 50;
+const size_t INCREMENT = 30;
 
 template <typename T>
 class Vector {

@@ -2,11 +2,7 @@
 #include "../include/base.h"
 #include <time.h>
 
-Solver::Solver() {};
-
 Solver::Solver(const CnfContainer &cnf) : cnf(cnf) {}
-
-Solver::~Solver() {};
 
 bool Solver::DPLL() {
     if (cnf.clause_cnt == 0)

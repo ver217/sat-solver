@@ -14,19 +14,6 @@ CnfContainer::CnfContainer(size_t unit_cnt, size_t clause_cnt, const Vector<size
     clause_size(cnt) {
 }
 
-CnfContainer::CnfContainer(const CnfContainer &container) :
-    unit_cnt(container.unit_cnt),
-    clause_cnt(container.clause_cnt),
-    unit_out(container.unit_out),
-    clause_out(container.clause_out),
-    data(container.data),
-    mask(container.mask),
-    clause_size(container.clause_size) {
-}
-
-CnfContainer::~CnfContainer() {
-}
-
 bool CnfContainer::has(size_t m, size_t n) const {
     return !mask[m][n];
 }
@@ -165,10 +152,6 @@ int CnfContainer::pick_literal() {
                 min_size = clause_size[i];
                 min_size_idx = i;
             }
-//            for (size_t j = 0; j < width; j++) {
-//                if (has(i, j))
-//                    return data[i][j];
-//            }
         }
     }
     size_t min_width = data.width(min_size_idx);
