@@ -49,11 +49,6 @@ void CnfContainer::set_unit(int unit) {
                 }
                 break;
             }
-        }
-    }
-    for (size_t i = 0; i < data.length(); i++) {
-        size_t width = data.width(i);
-        for (size_t j = 0; j < width; j++) {
             if (-unit == data(i, j)) {
                 mask.set(data.get_idx(i, j));
                 if (--clause_size[i] == 0 && !clause_out[i]) {
@@ -64,6 +59,19 @@ void CnfContainer::set_unit(int unit) {
             }
         }
     }
+//    for (size_t i = 0; i < data.length(); i++) {
+//        size_t width = data.width(i);
+//        for (size_t j = 0; j < width; j++) {
+//            if (-unit == data(i, j)) {
+//                mask.set(data.get_idx(i, j));
+//                if (--clause_size[i] == 0 && !clause_out[i]) {
+//                    clause_out.set(i);
+//                    clause_cnt--;
+//                }
+//                break;
+//            }
+//        }
+//    }
 }
 
 void CnfContainer::unset_unit(int unit) {
