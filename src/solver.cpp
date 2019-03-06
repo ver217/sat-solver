@@ -90,7 +90,7 @@ bool Solver::check() const {
         size_t width = cnf.data.width(i);
         bool line = false;
         for (size_t j = 0; j < width; j++)
-            line |= cnf.unit_out[cnf.data(i, j)];
+            line |= cnf.unit_out[cnf.data[i][j]];
         if (!line)
             break;
     }

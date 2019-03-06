@@ -24,20 +24,17 @@ VarMatrix::VarMatrix(const VarMatrix &matrix) : _length(matrix.length()), _width
 }
 
 VarMatrix::~VarMatrix() {
-    release();
-}
-
-void VarMatrix::release() {
-    if (_width) {
+   if (_width) {
         delete []_width;
         _width = nullptr;
-    }
-    if (data) {
-        for (size_t i = 0; i < _length; i++)
-            delete []data[i];
-        data = nullptr;
-    }
+   }
+   if (data) {
+       for (size_t i = 0; i < _length; i++)
+           delete []data[i];
+       data = nullptr;
+   }
 }
+
 
 size_t VarMatrix::length() const {
     return _length;
@@ -47,27 +44,6 @@ size_t VarMatrix::width(size_t idx) const {
     if (idx >= _length)
         throw "out of range";
     return _width[idx];
-}
-
-size_t VarMatrix::total() const {
-//    size_t total = 0;
-//    for (size_t i = 0; i < _length; i++)
-//        total += _width[i];
-//    return total;
-    return _length * 32;
-}
-
-size_t VarMatrix::get_idx(size_t m, size_t n) const {
-//    return offsets[m] + n;
-    return 32 * m + n;
-}
-
-int& VarMatrix::operator()(size_t m, size_t n) {
-    return data[m][n];
-}
-
-int VarMatrix::operator()(size_t m, size_t n) const {
-    return data[m][n];
 }
 
 int* VarMatrix::operator[](size_t i) const {

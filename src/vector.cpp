@@ -22,16 +22,11 @@ Vector<T>::Vector(const Vector<T>& v) : _size(v.size()), _capacity(v.capacity())
 
 template <typename T>
 Vector<T>::~Vector() {
-    release();
-};
-
-template <typename T>
-void Vector<T>::release() {
     if (data) {
         delete []data;
         data = NULL;
     }
-}
+};
 
 template <typename T>
 size_t Vector<T>::size() const {

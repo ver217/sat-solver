@@ -14,7 +14,6 @@ class Vector {
     Vector(size_t n);
     Vector(const Vector<T>& v);
     virtual ~Vector();
-    void release();
     size_t size() const;
     size_t capacity() const;
     T& operator[](size_t idx);
@@ -24,4 +23,5 @@ class Vector {
     size_t find(const T& x) const;
     void remove_first(const T& x);
     friend class VarMatrix;
+    friend class BitMap2D;
 };

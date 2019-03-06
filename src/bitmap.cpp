@@ -41,13 +41,25 @@ bool BitMap::operator[](int pos) const {
     return table[pos - bias];
 }
 
-BitMap2D::BitMap2D() : _length(0), matrix(nullptr) {}
+BitMap2D::BitMap2D() : _length(0), _width(nullptr), matrix(nullptr) {}
 
 BitMap2D::BitMap2D(const Vector<size_t> &cnt) : _length(cnt.size()) {
+    _width = new size_t[_length];
+    memcpy(_width, cnt.data, sizeof(size_t) * _length);
     matrix = new bool*[_length];
     for (size_t i = 0; i < _length; i++) {
-        matrix[i] = new bool[cnt[i]];
-        memset(matrix[i], 0, sizeof(bool) * cnt[i]);
+        matrix[i] = new bool[_width[i]];
+        memset(matrix[i], 0, sizeof(bool) * _width[i]);
+    }
+}
+
+BitMap2D::BitMap2D(const BitMap2D &bm) : _length(bm._length) {
+    _width = new size_t[_length];
+    memcpy(_width, bm._width, sizeof(size_t) * _length);
+    matrix = new bool*[_length];
+    for (size_t i = 0; i < _length; i++) {
+        matrix[i] = new bool[_width[i]];
+        memcpy(matrix[i], bm.matrix[i], sizeof(bool) * _width[i]);
     }
 }
 

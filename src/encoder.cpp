@@ -107,7 +107,7 @@ CnfContainer Encoder::to_cnf() {
             j = 0;
             i++;
         } else
-            cnf.data(i, j++) = res[k];
+            cnf.data[i][j++] = res[k];
     }
     return cnf;
 }

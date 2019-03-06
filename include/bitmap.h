@@ -20,7 +20,7 @@ class BitMap {
 
 class BitMap2D {
     size_t _length;
-//    size_t *_width;
+    size_t *_width;
     bool **matrix;
   public:
     BitMap2D();
