@@ -1,25 +1,26 @@
 #include "../include/varmatrix.h"
 #include <string.h>
 
-VarMatrix::VarMatrix() : _length(0), offsets(nullptr), data(nullptr) {}
+VarMatrix::VarMatrix() : _length(0), _width(nullptr), data(nullptr) {}
 
-VarMatrix::VarMatrix(const Vector<size_t> &cnt) : _length(cnt.size()), offsets(nullptr), data(nullptr) {
-    offsets = new size_t[_length + 1];
-    offsets[0] = 0;
-    size_t total = 0;
+VarMatrix::VarMatrix(const Vector<size_t> &cnt) : _length(cnt.size()), _width(nullptr), data(nullptr) {
+    _width = new size_t[_length];
+    memcpy(_width, cnt.data, sizeof(size_t) * _length);
+    data = new int*[_length];
     for (size_t i = 0; i < _length; i++) {
-        total += cnt[i];
-        offsets[i + 1] = total;
+        data[i] = new int[_width[i]];
+        memset(data[i], 0, sizeof(int) * _width[i]);
     }
-    data = new int[total];
-    memset(data, 0, sizeof(int) * total);
 }
 
-VarMatrix::VarMatrix(const VarMatrix &matrix) : _length(matrix.length()), offsets(nullptr), data(nullptr) {
-    offsets = new size_t[_length + 1];
-    memcpy(offsets, matrix.offsets, sizeof(size_t) * (_length + 1));
-    data = new int[matrix.total()];
-    memcpy(data, matrix.data, sizeof(int) * matrix.total());
+VarMatrix::VarMatrix(const VarMatrix &matrix) : _length(matrix.length()), _width(nullptr), data(nullptr) {
+    _width = new size_t[_length];
+    memcpy(_width, matrix._width, sizeof(size_t) * _length);
+    data = new int*[_length];
+    for (size_t i = 0; i < _length; i++) {
+        data[i] = new int[_width[i]];
+        memcpy(data[i], matrix.data[i], sizeof(int) * _width[i]);
+    }
 }
 
 VarMatrix::~VarMatrix() {
@@ -27,12 +28,13 @@ VarMatrix::~VarMatrix() {
 }
 
 void VarMatrix::release() {
-    if (offsets) {
-        delete []offsets;
-        offsets = nullptr;
+    if (_width) {
+        delete []_width;
+        _width = nullptr;
     }
     if (data) {
-        delete []data;
+        for (size_t i = 0; i < _length; i++)
+            delete []data[i];
         data = nullptr;
     }
 }
@@ -44,21 +46,26 @@ size_t VarMatrix::length() const {
 size_t VarMatrix::width(size_t idx) const {
     if (idx >= _length)
         throw "out of range";
-    return offsets[idx + 1] - offsets[idx];
+    return _width[idx];
 }
 
 size_t VarMatrix::total() const {
-    return offsets[_length];
+//    size_t total = 0;
+//    for (size_t i = 0; i < _length; i++)
+//        total += _width[i];
+//    return total;
+    return _length * 32;
 }
 
 size_t VarMatrix::get_idx(size_t m, size_t n) const {
-    return offsets[m] + n;
+//    return offsets[m] + n;
+    return 32 * m + n;
 }
 
 int& VarMatrix::operator()(size_t m, size_t n) {
-    return data[get_idx(m, n)];
+    return data[m][n];
 }
 
 int VarMatrix::operator()(size_t m, size_t n) const {
-    return data[get_idx(m, n)];
+    return data[m][n];
 }

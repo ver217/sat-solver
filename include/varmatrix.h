@@ -4,8 +4,8 @@
 
 class VarMatrix {
     size_t _length;
-    size_t *offsets;
-    int *data;
+    size_t *_width;
+    int **data;
   public:
     VarMatrix();
     VarMatrix(const Vector<size_t> &cnt);
