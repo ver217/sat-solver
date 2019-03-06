@@ -40,3 +40,33 @@ void BitMap::clear() {
 bool BitMap::operator[](int pos) const {
     return table[pos - bias];
 }
+
+BitMap2D::BitMap2D() : _length(0), matrix(nullptr) {}
+
+BitMap2D::BitMap2D(const Vector<size_t> &cnt) : _length(cnt.size()) {
+    matrix = new bool*[_length];
+    for (size_t i = 0; i < _length; i++) {
+        matrix[i] = new bool[cnt[i]];
+        memset(matrix[i], 0, sizeof(bool) * cnt[i]);
+    }
+}
+
+BitMap2D::~BitMap2D() {
+    if (matrix) {
+        for (size_t i = 0; i < _length; i++)
+            delete []matrix[i];
+        matrix = nullptr;
+    }
+}
+
+void BitMap2D::set(size_t i, size_t j) {
+    matrix[i][j] = true;
+}
+
+void BitMap2D::unset(size_t i, size_t j) {
+    matrix[i][j] = false;
+}
+
+bool* BitMap2D::operator[](size_t i) const {
+    return matrix[i];
+}
