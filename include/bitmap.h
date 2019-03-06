@@ -2,10 +2,8 @@
 #include "types.h"
 
 class BitMap {
-    static const uint N_BITS = sizeof(uint) * 8;
-    uint n_nums;
-    uint *nums;
     int bias;
+    bool *table;
   public:
     uint size;
     BitMap();

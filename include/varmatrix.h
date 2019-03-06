@@ -18,4 +18,6 @@ class VarMatrix {
     size_t get_idx(size_t m, size_t n) const;
     int& operator()(size_t m, size_t n);
     int operator()(size_t m, size_t n) const;
+    int* operator[](size_t i) const;
+    int* operator[](size_t i);
 };

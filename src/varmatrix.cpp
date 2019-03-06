@@ -69,3 +69,11 @@ int& VarMatrix::operator()(size_t m, size_t n) {
 int VarMatrix::operator()(size_t m, size_t n) const {
     return data[m][n];
 }
+
+int* VarMatrix::operator[](size_t i) const {
+    return data[i];
+}
+
+int* VarMatrix::operator[](size_t i) {
+    return data[i];
+}
