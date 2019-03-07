@@ -21,6 +21,7 @@ class Encoder {
     Encoder();
     Encoder(string filename);
     Encoder(const Vector<int>& def);
+    Encoder(const Encoder& encoder);
     virtual ~Encoder();
     void to_file(string filename);
     CnfContainer to_cnf();

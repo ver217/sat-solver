@@ -8,6 +8,7 @@ class Sudoku {
   public:
     Sudoku();
     Sudoku(const Vector<int>& nums);
+    Sudoku(const Sudoku& sudoku);
     virtual ~Sudoku();
     int& operator()(size_t i, size_t j);
     int operator()(size_t i, size_t j) const;

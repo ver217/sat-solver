@@ -7,10 +7,12 @@ Sudoku::Sudoku() {
 
 Sudoku::Sudoku(const Vector<int>& nums)
 {
-    if (nums.size() == 81) {
-        for (size_t i = 0; i < 81; i++)
-            data[i] = nums[i];
-    }
+    if (nums.size() == 81)
+        memcpy(data, nums.data, sizeof(int) * 81);
+}
+
+Sudoku::Sudoku(const Sudoku &sudoku) {
+    memcpy(data, sudoku.data, sizeof(int) * 81);
 }
 
 Sudoku::~Sudoku() {}

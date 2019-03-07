@@ -50,7 +50,7 @@ void CnfContainer::set_unit(int unit) {
             if (-unit == data[i][j]) {
                 mask.set(i, j);
                 --clause_size[i];
-                if (!clause_out[i]) {   // TODO: delete this 'if' will speed up
+                if (!clause_out[i]) {
                     if (clause_size[i] == 0) {
                         clause_out.set(i);
                         clause_cnt--;
@@ -83,6 +83,7 @@ void CnfContainer::unset_unit(int unit) {
                     units_idx.push_front(i);
                 } else if (clause_size[i] == 2)
                     units_idx.remove_first(i);
+                break;
             }
         }
         if (clause_out[i]) {
@@ -105,9 +106,11 @@ void CnfContainer::unset_unit(int unit) {
 }
 
 ostream &operator<<(ostream &out, const CnfContainer &container) {
+    out << "n_varibles: " << container.unit_cnt << ", n_clauses: " << container.clause_cnt << endl;
     for (size_t i = 0; i < container.clause_cnt; i++) {
         if (!container.clause_out[i]) {
             size_t width = container.data.width(i);
+            out << '[' << i + 1 << "] ";
             out << '(';
             for (size_t j = 0; j < width; j++) {
                 if (container.has(i, j)) {
@@ -135,7 +138,7 @@ int CnfContainer::pick_unit() {
         for (size_t j = 0; j < width; j++)
             if (!mask[i][j])
                 return data[i][j];
-        throw "pick unit ERROR!!!!"; // TODO: delete this throw will speed up
+        throw "pick unit ERROR!!!!";
     }
     return 0;
 }
@@ -166,6 +169,8 @@ int CnfContainer::pick_literal() {
                 min_size = clause_size[i];
                 min_size_idx = i;
             }
+            if (min_size == 2)
+                break;
         }
     }
     size_t min_width = data.width(min_size_idx);

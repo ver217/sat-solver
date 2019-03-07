@@ -51,6 +51,7 @@ int main() {
             while (op1) {
                 clear();
                 cout << sudoku << endl;
+                cout << "  Sudoku" << endl;
                 cout << "------------------" << endl;
                 cout << "  1. Dump CNF File" << endl;
                 cout << "  2. Solve Sudoku" << endl;
@@ -128,19 +129,54 @@ int main() {
         }
         case 2: {
             string filename;
-            cout << "Input filename: ";
+            cout << "Input CNF filename: ";
             cin >> filename;
             try {
                 CnfContainer cnf(read_cnf_file(filename));
-                cout << "Solving SAT..." << endl;
-                Solver solver(cnf);
-                solver.solve(cout);
+                int op2 = 1;
+                while (op2) {
+                    clear();
+                    cout << "  SAT" << endl;
+                    cout << "------------------" << endl;
+                    cout << "  1. Display CNF" << endl;
+                    cout << "  2. Solve SAT" << endl;
+                    cout << "  0. Exit   " << endl;
+                    cout << "------------------" << endl;
+                    cout << "  Choose operation [0~2]: ";
+                    cin >> op2;
+                    if (cin.fail()) {
+                        cin.clear();
+                        cin.get();
+                        op2 = -1;
+                    }
+                    switch (op2) {
+                        case 1: {
+                            cout << cnf << endl;
+                            cout << "Press enter to continue ";
+                            getchar();
+                            getchar();
+                            break;
+                        }
+                        case 2: {
+                            cout << "Solving SAT..." << endl;
+                            Solver solver(cnf);
+                            solver.solve(cout);
+                            cout << "Press enter to continue ";
+                            getchar();
+                            getchar();
+                            break;
+                        }
+                        case 0:
+                            break;
+                        default: {
+                            op2 = 1;
+                            break;
+                        }
+                    }
+                }
             } catch (const char *const msg) {
                 cout << msg << endl;
             }
-            cout << "Press enter to continue ";
-            getchar();
-            getchar();
             break;
         }
         case 0:

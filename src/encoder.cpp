@@ -74,6 +74,12 @@ Encoder::Encoder(const Vector<int>& def) : var_cnt(729) {
     square_atleast_one();
 }
 
+Encoder::Encoder(const Encoder& encoder) :
+    var_cnt(encoder.var_cnt),
+    clause_cnt(encoder.clause_cnt),
+    res(encoder.res) {
+}
+
 Encoder::~Encoder() {}
 
 void Encoder::to_file(string filename) {

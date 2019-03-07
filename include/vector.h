@@ -24,4 +24,5 @@ class Vector {
     void remove_first(const T& x);
     friend class VarMatrix;
     friend class BitMap2D;
+    friend class Sudoku;
 };
