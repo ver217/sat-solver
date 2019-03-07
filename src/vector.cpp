@@ -3,19 +3,19 @@
 #include <string.h>
 
 template <typename T>
-Vector<T>::Vector() : _size(0), _capacity(INIT_CAPACITY), data(NULL) {
+Vector<T>::Vector() : _size(0), _capacity(INIT_CAPACITY), data(nullptr) {
     data = new T[_capacity];
     memset(data, 0, sizeof(T) * _capacity);
 }
 
 template <typename T>
-Vector<T>::Vector(size_t n) : _size(n), _capacity(n), data(NULL) {
+Vector<T>::Vector(size_t n) : _size(n), _capacity(n), data(nullptr) {
     data = new T[_capacity];
     memset(data, 0, sizeof(T) * _capacity);
 }
 
 template <typename T>
-Vector<T>::Vector(const Vector<T>& v) : _size(v.size()), _capacity(v.capacity()), data(NULL) {
+Vector<T>::Vector(const Vector<T>& v) : _size(v.size()), _capacity(v.capacity()), data(nullptr) {
     data = new T[_capacity];
     memcpy(data, v.data, sizeof(T) * _capacity);
 }
@@ -24,7 +24,7 @@ template <typename T>
 Vector<T>::~Vector() {
     if (data) {
         delete []data;
-        data = NULL;
+        data = nullptr;
     }
 };
 
@@ -62,7 +62,7 @@ const T& Vector<T>::pop_back() {
     if (_size > 0)
         return data[--_size];
     else
-        throw "out of range";
+        throw "vector pop out of range";
 }
 
 template <typename T>
@@ -74,14 +74,11 @@ size_t Vector<T>::find(const T& x) const {
 }
 
 template <typename T>
-void Vector<T>::remove_first(const T& x) {
-    size_t i = 0;
-    while (i < _size && data[i] != x)
-        i++;
-    if (i < _size)
-        _size--;
-    for (; i < _size; i++)
-        data[i] = data[i + 1];
+void Vector<T>::reserve(size_t n) {
+    if (_capacity < n) {
+        _capacity = n;
+        data = (T*)realloc(data, sizeof(T) * _capacity);
+    }
 }
 
 
