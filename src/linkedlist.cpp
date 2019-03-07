@@ -11,9 +11,9 @@ Node::~Node() {
     }
 }
 
-LinkedList::LinkedList() : head(nullptr), _size(0) {}
+LinkedList::LinkedList() : head(nullptr), cur_pos(nullptr), _size(0) {}
 
-LinkedList::LinkedList(const LinkedList &list) : _size(list._size) {
+LinkedList::LinkedList(const LinkedList &list) : cur_pos(nullptr), _size(list._size) {
     if (list.head) {
         head = new Node(list.head->value);
         Node* node = head;
@@ -41,7 +41,7 @@ size_t LinkedList::front() const {
     if (head)
         return head->value;
     else
-        throw "out of range";
+        throw "list from out of range";
 }
 
 void LinkedList::push_front(size_t x) {
@@ -94,4 +94,21 @@ ostream& operator<<(ostream& out, const LinkedList& list) {
     }
     out << endl;
     return out;
+}
+
+void LinkedList::cur_to_begin() {
+    cur_pos = head;
+}
+
+size_t LinkedList::get_cur_val() {
+    if (cur_pos) {
+        size_t val = cur_pos->value;
+        cur_pos = cur_pos->next;
+        return val;
+    }
+    throw "list get cur val ERROR";
+}
+
+bool LinkedList::is_cur_end() const {
+    return cur_pos == nullptr;
 }

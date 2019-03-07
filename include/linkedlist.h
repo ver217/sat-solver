@@ -13,6 +13,7 @@ struct Node {
 
 class LinkedList {
     Node* head;
+    Node* cur_pos;
     size_t _size;
   public:
     LinkedList();
@@ -23,6 +24,9 @@ class LinkedList {
     void push_front(size_t x);
     void remove_first(size_t x);
     bool exist(size_t x);
+    void cur_to_begin();
+    size_t get_cur_val();
+    bool is_cur_end() const;
     friend ostream& operator<<(ostream& out, const LinkedList& list);
-    friend class CnfContainer;
+//    friend class CnfContainer;
 };

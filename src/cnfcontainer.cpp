@@ -28,7 +28,7 @@ CnfContainer::CnfContainer(const CnfContainer &container) :
     units_idx(container.units_idx) {}
 
 
-bool CnfContainer::has(size_t m, size_t n) const {
+inline bool CnfContainer::has(size_t m, size_t n) const {
     return !mask[m][n];
 }
 
@@ -144,17 +144,27 @@ int CnfContainer::pick_unit() {
 }
 
 bool CnfContainer::exist_unit(int literal) {
+//    if (units_idx.size() > 0) {
+//        Node* node = units_idx.head;
+//        if (node != units_idx.head)
+//            throw "WTF ERROR";
+//        while (node) {
+//            size_t i = node->value;
+//            size_t width = data.width(i);
+//            for (size_t j = 0; j < width; j++)
+//                if (has(i, j) && literal == data[i][j])
+//                    return true;
+//            node = node->next;
+//        }
+//    }
     if (units_idx.size() > 0) {
-        Node* node = units_idx.head;
-        if (node != units_idx.head)
-            throw "WTF ERROR";
-        while (node) {
-            size_t i = node->value;
+        units_idx.cur_to_begin();
+        while (!units_idx.is_cur_end()) {
+            size_t i = units_idx.get_cur_val();
             size_t width = data.width(i);
             for (size_t j = 0; j < width; j++)
                 if (has(i, j) && literal == data[i][j])
                     return true;
-            node = node->next;
         }
     }
     return false;

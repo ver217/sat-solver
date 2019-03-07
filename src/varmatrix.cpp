@@ -42,7 +42,7 @@ size_t VarMatrix::length() const {
 
 size_t VarMatrix::width(size_t idx) const {
     if (idx >= _length)
-        throw "out of range";
+        throw "matrix width out of range";
     return _width[idx];
 }
 
