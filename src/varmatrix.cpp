@@ -55,29 +55,6 @@ int* VarMatrix::operator[](size_t i) {
     return data[i];
 }
 
-LiteralTable::LiteralTable() : n_unit(0) {}
-
-LiteralTable::LiteralTable(size_t unit_cnt, const Vector<size_t> &cnt) : VarMatrix(cnt), n_unit(unit_cnt) {}
-
-LiteralTable::LiteralTable(const LiteralTable &table) : n_unit(table.n_unit) {}
-
-size_t LiteralTable::width(int x) const {
-    size_t table_idx = x < 0 ? x + n_unit : x + n_unit - 1;
-    if (table_idx >= _length)
-        throw "matrix width out of range";
-    return _width[table_idx];
-}
-
-int* LiteralTable::operator[](int x) const {
-    size_t table_idx = x < 0 ? x + n_unit : x + n_unit - 1;
-    return data[table_idx];
-}
-
-int* LiteralTable::operator[](int x) {
-    size_t table_idx = x < 0 ? x + n_unit : x + n_unit - 1;
-    return data[table_idx];
-}
-
 #else
 VarMatrix::VarMatrix() : _length(0), offsets(nullptr), data(nullptr) {}
 
