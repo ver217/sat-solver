@@ -19,17 +19,25 @@ CnfContainer read_cnf_file(string filename) {
     f >> n_unit >> n_clause;
     int pos = f.tellg();
     Vector<size_t> cnt(n_clause);
+#ifndef OLD
     Vector<size_t> literal_cnt(n_unit * 2);
+#endif
     for (size_t i = 0; i < n_clause; i++) {
         int x, cnt_i = 0;
         while ((f >> x, x != 0)) {
             cnt_i++;
+#ifndef OLD
             size_t table_idx = x < 0 ? x + n_unit : x + n_unit - 1;
             literal_cnt[table_idx]++;
+#endif
         }
         cnt[i] = cnt_i;
     }
+#ifndef OLD
     CnfContainer cnf(n_unit, n_clause, cnt, literal_cnt);
+#else
+    CnfContainer cnf(n_unit, n_clause, cnt);
+#endif
     f.seekg(pos);
     Vector<size_t> literal_table_pos(n_unit * 2);
     for (size_t i = 0; i < n_clause; i++) {

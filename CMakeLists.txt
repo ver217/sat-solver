@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 PROJECT(sat)
 
 SET(CMAKE_C_COMPTLER GCC)
-add_definitions(-std=c++11 -Wall -g )
+add_definitions(-std=c++11 -Wall -g)
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src SRC_LIST)
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
