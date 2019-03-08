@@ -31,7 +31,11 @@ CnfContainer read_cnf_file(string filename) {
     for (size_t i = 0; i < n_clause; i++) {
         int x, j = 0;
         while ((f >> x, x != 0))
+#ifndef OLD
             cnf.data[i][j++] = x;
+#else
+            cnf.data(i, j++) = x;
+#endif
     }
     f.close();
     return cnf;

@@ -4,6 +4,7 @@
 
 CnfContainer::CnfContainer() : unit_cnt(0), clause_cnt(0) {}
 
+#ifndef OLD
 CnfContainer::CnfContainer(size_t unit_cnt, size_t clause_cnt, const Vector<size_t> &cnt) :
     unit_cnt(unit_cnt),
     clause_cnt(clause_cnt),
@@ -105,32 +106,6 @@ void CnfContainer::unset_unit(int unit) {
     }
 }
 
-ostream &operator<<(ostream &out, const CnfContainer &container) {
-    out << "n_varibles: " << container.unit_cnt << ", n_clauses: " << container.clause_cnt << endl;
-    for (size_t i = 0; i < container.clause_cnt; i++) {
-        if (!container.clause_out[i]) {
-            size_t width = container.data.width(i);
-            out << '[' << i + 1 << "] ";
-            out << '(';
-            for (size_t j = 0; j < width; j++) {
-                if (container.has(i, j)) {
-                    int unit = container.data[i][j];
-                    if (unit > 0)
-                        out << unit;
-                    else if (unit < 0)
-                        out << '~' << -unit;
-                    if (j == width - 1)
-                        out << ')';
-                    else
-                        out << " + ";
-                }
-            }
-            out << endl;
-        }
-    }
-    return out;
-}
-
 int CnfContainer::pick_unit() {
     if (units_idx.size() > 0) {
         size_t i = units_idx.front();
@@ -189,3 +164,184 @@ int CnfContainer::pick_literal() {
             return data[min_size_idx][j];
     throw "pick literal ERROR!!!!";
 }
+
+ostream &operator<<(ostream &out, const CnfContainer &container) {
+    out << "n_varibles: " << container.unit_cnt << ", n_clauses: " << container.clause_cnt << endl;
+    for (size_t i = 0; i < container.clause_cnt; i++) {
+        if (!container.clause_out[i]) {
+            size_t width = container.data.width(i);
+            out << '[' << i + 1 << "] ";
+            out << '(';
+            for (size_t j = 0; j < width; j++) {
+                if (container.has(i, j)) {
+                    int unit = container.data[i][j];
+                    if (unit > 0)
+                        out << unit;
+                    else if (unit < 0)
+                        out << '~' << -unit;
+                    if (j == width - 1)
+                        out << ')';
+                    else
+                        out << " + ";
+                }
+            }
+            out << endl;
+        }
+    }
+    return out;
+}
+#else
+CnfContainer::CnfContainer(size_t unit_cnt, size_t clause_cnt, const Vector<size_t> &cnt) :
+    unit_cnt(unit_cnt),
+    clause_cnt(clause_cnt),
+    unit_out(-unit_cnt, unit_cnt),
+    clause_out(clause_cnt - 1),
+    data(cnt),
+    mask(data.total() - 1),
+    clause_size(cnt) {
+}
+
+CnfContainer::CnfContainer(const CnfContainer &container) :
+    unit_cnt(container.unit_cnt),
+    clause_cnt(container.clause_cnt),
+    unit_out(container.unit_out),
+    clause_out(container.clause_out),
+    data(container.data),
+    mask(container.mask),
+    clause_size(container.clause_size) {
+}
+
+bool CnfContainer::has(size_t m, size_t n) const {
+    return !mask[data.get_idx(m, n)];
+}
+
+void CnfContainer::set_unit(int unit) {
+    unit_out.set(unit);
+    for (size_t i = 0; i < data.length(); i++) {
+        size_t width = data.width(i);
+        for (size_t j = 0; j < width; j++) {
+            if (unit == data(i, j)) {
+                mask.set(data.get_idx(i, j));
+                if (!clause_out[i]) {
+                    clause_out.set(i);
+                    clause_cnt--;
+                }
+                break;
+            }
+        }
+    }
+    for (size_t i = 0; i < data.length(); i++) {
+        size_t width = data.width(i);
+        for (size_t j = 0; j < width; j++) {
+            if (-unit == data(i, j)) {
+                mask.set(data.get_idx(i, j));
+                if (--clause_size[i] == 0 && !clause_out[i]) {
+                    clause_out.set(i);
+                    clause_cnt--;
+                }
+                break;
+            }
+        }
+    }
+}
+
+void CnfContainer::unset_unit(int unit) {
+    unit_out.unset(unit);
+    for (size_t i = 0; i < data.length(); i++) {
+        if (clause_out[i]) {
+            size_t width = data.width(i);
+            bool recover = true, find = false;
+            for (size_t j = 0; j < width; j++) {
+                if (unit == data(i, j)) {
+                    find = true;
+                    mask.unset(data.get_idx(i, j));
+                } else if (unit_out[data(i, j)])
+                    recover = false;
+            }
+            if (find && recover) {
+                clause_out.unset(i);
+                clause_cnt++;
+            }
+        }
+    }
+    for (size_t i = 0; i < data.length(); i++) {
+        size_t width = data.width(i);
+        bool recover = true;
+        for (size_t j = 0; j < width; j++) {
+            if (-unit == data(i, j)) {
+                mask.unset(data.get_idx(i, j));
+                ++clause_size[i];
+            } else if (unit_out[data(i, j)])
+                recover = false;
+        }
+        if (recover && clause_out[i] && clause_size[i] == width) {
+            clause_out.unset(i);
+            clause_cnt++;
+        }
+    }
+}
+
+int CnfContainer::pick_unit() {
+    for (size_t i = 0; i < clause_size.size(); i++) {
+        if (clause_size[i] == 1 && !clause_out[i]) {
+            size_t width = data.width(i);
+            for (size_t j = 0; j < width; j++) {
+                if (has(i, j))
+                    return data(i, j);
+            }
+        }
+    }
+    return 0;
+}
+
+bool CnfContainer::exist_unit(int literal) {
+    for (size_t i = 0; i < clause_size.size(); i++) {
+        if (clause_size[i] == 1 && !clause_out[i]) {
+            size_t width = data.width(i);
+            for (size_t j = 0; j < width; j++) {
+                if (has(i, j) && literal == data(i, j))
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+
+int CnfContainer::pick_literal() {
+    for (size_t i = 0; i < data.length(); i++) {
+        if (!clause_out[i]) {
+            size_t width = data.width(i);
+            for (size_t j = 0; j < width; j++) {
+                if (has(i, j))
+                    return data(i, j);
+            }
+        }
+    }
+    return 0;
+}
+
+ostream &operator<<(ostream &out, const CnfContainer &container) {
+    for (size_t i = 0; i < container.clause_cnt; i++) {
+        if (!container.clause_out[i]) {
+            size_t width = container.data.width(i);
+            out << '[' << i + 1 << "] ";
+            out << '(';
+            for (size_t j = 0; j < width; j++) {
+                if (container.has(i, j)) {
+                    int unit = container.data(i, j);
+                    if (unit > 0)
+                        out << unit;
+                    else if (unit < 0)
+                        out << '~' << -unit;
+                    if (j == width - 1)
+                        out << ')';
+                    else
+                        out << " + ";
+                }
+            }
+            out << endl;
+        }
+    }
+    return out;
+}
+#endif

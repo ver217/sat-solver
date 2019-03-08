@@ -113,7 +113,11 @@ CnfContainer Encoder::to_cnf() {
             j = 0;
             i++;
         } else
+#ifndef OLD
             cnf.data[i][j++] = res[k];
+#else
+            cnf.data(i, j) = res[k];
+#endif
     }
     return cnf;
 }

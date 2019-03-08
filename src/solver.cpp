@@ -87,7 +87,11 @@ bool Solver::check() const {
         size_t width = cnf.data.width(i);
         bool line = false;
         for (size_t j = 0; j < width; j++)
+#ifndef OLD
             line |= cnf.unit_out[cnf.data[i][j]];
+#else
+            line |= cnf.unit_out[cnf.data(i ,j)];
+#endif
         if (!line)
             return false;
     }
