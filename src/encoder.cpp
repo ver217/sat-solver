@@ -97,27 +97,35 @@ void Encoder::to_file(string filename) {
 
 CnfContainer Encoder::to_cnf() {
     Vector<size_t> cnt(clause_cnt);
+    Vector<size_t> literal_cnt(var_cnt * 2);
     int cnt_i = 0;
     size_t idx = 0;
     for (size_t i = 0; i < res.size(); i++) {
         if (res[i] == 0) {
             cnt[idx++] = cnt_i;
             cnt_i = 0;
-        } else
+        } else {
             cnt_i++;
+            size_t table_idx = res[i] < 0 ? res[i] + var_cnt : res[i] + var_cnt - 1;
+            literal_cnt[table_idx]++;
+        }
     }
-    CnfContainer cnf(var_cnt, clause_cnt, cnt);
+    CnfContainer cnf(var_cnt, clause_cnt, cnt, literal_cnt);
+    Vector<size_t> literal_table_pos(var_cnt * 2);
     size_t i = 0, j = 0;
     for (size_t k = 0; k < res.size(); k++) {
         if (res[k] == 0) {
             j = 0;
             i++;
-        } else
+        } else {
 #ifndef OLD
             cnf.data[i][j++] = res[k];
+            size_t table_idx = res[k] < 0 ? res[k] + var_cnt : res[k] + var_cnt - 1;
+            cnf.literal_table[table_idx][literal_table_pos[table_idx]++] = static_cast<int>(i);
 #else
             cnf.data(i, j) = res[k];
 #endif
+        }
     }
     return cnf;
 }

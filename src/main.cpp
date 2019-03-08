@@ -176,6 +176,9 @@ int main() {
                 }
             } catch (const char *const msg) {
                 cout << msg << endl;
+                cout << "Press enter to continue ";
+                getchar();
+                getchar();
             }
             break;
         }

@@ -14,8 +14,9 @@ class CnfContainer {
     BitMap2D mask;
     Vector<size_t> clause_size;
     LinkedList units_idx;
+    VarMatrix literal_table;
     CnfContainer();
-    CnfContainer(size_t unit_cnt, size_t clause_cnt, const Vector<size_t> &cnt);
+    CnfContainer(size_t unit_cnt, size_t clause_cnt, const Vector<size_t> &cnt, const Vector<size_t> &literal_cnt);
     CnfContainer(const CnfContainer& container);
     virtual ~CnfContainer() = default;
     inline bool has(size_t m, size_t n) const;

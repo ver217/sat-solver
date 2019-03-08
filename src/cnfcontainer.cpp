@@ -5,14 +5,15 @@
 CnfContainer::CnfContainer() : unit_cnt(0), clause_cnt(0) {}
 
 #ifndef OLD
-CnfContainer::CnfContainer(size_t unit_cnt, size_t clause_cnt, const Vector<size_t> &cnt) :
+CnfContainer::CnfContainer(size_t unit_cnt, size_t clause_cnt, const Vector<size_t> &cnt, const Vector<size_t>& literal_cnt) :
     unit_cnt(unit_cnt),
     clause_cnt(clause_cnt),
     unit_out(-unit_cnt, unit_cnt),
     clause_out(clause_cnt - 1),
     data(cnt),
     mask(cnt),
-    clause_size(cnt) {
+    clause_size(cnt),
+    literal_table(literal_cnt) {
     for (size_t i = 0; i < clause_size.size(); i++)
         if (clause_size[i] == 1)
             units_idx.push_front(i);
@@ -26,7 +27,8 @@ CnfContainer::CnfContainer(const CnfContainer &container) :
     data(container.data),
     mask(container.mask),
     clause_size(container.clause_size),
-    units_idx(container.units_idx) {}
+    units_idx(container.units_idx),
+    literal_table(container.literal_table) {}
 
 
 inline bool CnfContainer::has(size_t m, size_t n) const {
@@ -35,7 +37,10 @@ inline bool CnfContainer::has(size_t m, size_t n) const {
 
 void CnfContainer::set_unit(int unit) {
     unit_out.set(unit);
-    for (size_t i = 0; i < data.length(); i++) {
+    size_t table_idx = unit < 0 ? unit + unit_cnt : unit + unit_cnt - 1;
+    size_t n_clauses_have_unit = literal_table.width(table_idx);
+    for (size_t k = 0; k < n_clauses_have_unit; k++) {
+        size_t i = literal_table[table_idx][k];
         size_t width = data.width(i);
         for (size_t j = 0; j < width; j++) {
             if (unit == data[i][j]) {
@@ -48,6 +53,14 @@ void CnfContainer::set_unit(int unit) {
                 }
                 break;
             }
+        }
+    }
+    table_idx = -unit < 0 ? -unit + unit_cnt : -unit + unit_cnt - 1;
+    n_clauses_have_unit = literal_table.width(table_idx);
+    for (size_t k = 0; k < n_clauses_have_unit; k++) {
+        size_t i = literal_table[table_idx][k];
+        size_t width = data.width(i);
+        for (size_t j = 0; j < width; j++) {
             if (-unit == data[i][j]) {
                 mask.set(i, j);
                 --clause_size[i];
@@ -63,31 +76,44 @@ void CnfContainer::set_unit(int unit) {
             }
         }
     }
+//    for (size_t i = 0; i < data.length(); i++) {
+//        size_t width = data.width(i);
+//        for (size_t j = 0; j < width; j++) {
+//            if (unit == data[i][j]) {
+//                mask.set(i, j);
+//                if (!clause_out[i]) {
+//                    clause_out.set(i);
+//                    clause_cnt--;
+//                    if (clause_size[i] == 1)
+//                        units_idx.remove_first(i);
+//                }
+//                break;
+//            }
+//            if (-unit == data[i][j]) {
+//                mask.set(i, j);
+//                --clause_size[i];
+//                if (!clause_out[i]) {
+//                    if (clause_size[i] == 0) {
+//                        clause_out.set(i);
+//                        clause_cnt--;
+//                        units_idx.remove_first(i);
+//                    } else if (clause_size[i] == 1)
+//                        units_idx.push_front(i);
+//                }
+//                break;
+//            }
+//        }
+//    }
 }
 
 void CnfContainer::unset_unit(int unit) {
     unit_out.unset(unit);
-    for (size_t i = 0; i < data.length(); i++) {
-        size_t width = data.width(i);
-        bool recover = true, find = false;
-        for (size_t j = 0; j < width; j++) {
-            if (-unit == data[i][j]) {
-                find = true;
-                mask.unset(i, j);
-                ++clause_size[i];
-            } else if (unit_out[data[i][j]])
-                recover = false;
-            if (find && recover) {
-                if (clause_size[i] == 1) {
-                    clause_out.unset(i);
-                    clause_cnt++;
-                    units_idx.push_front(i);
-                } else if (clause_size[i] == 2)
-                    units_idx.remove_first(i);
-                break;
-            }
-        }
+    size_t table_idx = unit < 0 ? unit + unit_cnt : unit + unit_cnt - 1;
+    size_t n_clauses_have_unit = literal_table.width(table_idx);
+    for (size_t k = 0; k < n_clauses_have_unit; k++) {
+        size_t i = literal_table[table_idx][k];
         if (clause_out[i]) {
+            size_t width = data.width(i);
             bool recover = true, find = false;
             for (size_t j = 0; j < width; j++) {
                 if (unit == data[i][j]) {
@@ -104,6 +130,67 @@ void CnfContainer::unset_unit(int unit) {
             }
         }
     }
+    table_idx = -unit < 0 ? -unit + unit_cnt : -unit + unit_cnt - 1;
+    n_clauses_have_unit = literal_table.width(table_idx);
+    for (size_t k = 0; k < n_clauses_have_unit; k++) {
+         size_t i = literal_table[table_idx][k];
+         size_t width = data.width(i);
+          bool recover = true, find = false;
+         for (size_t j = 0; j < width; j++) {
+             if (-unit == data[i][j]) {
+                 find = true;
+                 mask.unset(i, j);
+                 ++clause_size[i];
+             } else if (unit_out[data[i][j]])
+                 recover = false;
+             if (find && recover) {
+                 if (clause_size[i] == 1) {
+                     clause_out.unset(i);
+                     clause_cnt++;
+                     units_idx.push_front(i);
+                 } else if (clause_size[i] == 2)
+                     units_idx.remove_first(i);
+                 break;
+             }
+         }
+     }
+//    for (size_t i = 0; i < data.length(); i++) {
+//        size_t width = data.width(i);
+//        bool recover = true, find = false;
+//        for (size_t j = 0; j < width; j++) {
+//            if (-unit == data[i][j]) {
+//                find = true;
+//                mask.unset(i, j);
+//                ++clause_size[i];
+//            } else if (unit_out[data[i][j]])
+//                recover = false;
+//            if (find && recover) {
+//                if (clause_size[i] == 1) {
+//                    clause_out.unset(i);
+//                    clause_cnt++;
+//                    units_idx.push_front(i);
+//                } else if (clause_size[i] == 2)
+//                    units_idx.remove_first(i);
+//                break;
+//            }
+//        }
+//        if (clause_out[i]) {
+//            bool recover = true, find = false;
+//            for (size_t j = 0; j < width; j++) {
+//                if (unit == data[i][j]) {
+//                    find = true;
+//                    mask.unset(i, j);
+//                } else if (unit_out[data[i][j]])
+//                    recover = false;
+//            }
+//            if (find && recover) {
+//                clause_out.unset(i);
+//                clause_cnt++;
+//                if (clause_size[i] == 1)
+//                    units_idx.push_front(i);
+//            }
+//        }
+//    }
 }
 
 int CnfContainer::pick_unit() {
