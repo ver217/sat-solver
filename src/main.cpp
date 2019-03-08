@@ -80,15 +80,17 @@ int main() {
                     break;
                 }
                 case 2: {
+                    clock_t start = clock();
                     CnfContainer cnf(enc.to_cnf());
-                    cout << "Solving SAT..." << endl;
                     Solver solver(cnf);
                     bool status = solver.solve();
                     if (status) {
                         Vector<int> res(solver.get_res());
                         Sudoku sudoku_sol(Decoder::decode(res));
-                        cout << sudoku_sol;
+                        cout << sudoku_sol << endl;
                     }
+                    clock_t end = clock();
+                    cout << "Total time: " << static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000 << endl;
                     op1 = 0;
                     cout << "Press enter to continue ";
                     getchar();
@@ -102,15 +104,17 @@ int main() {
                     cout << "Generate CNF..." << endl;
                     enc.to_file(filename);
                     cout << "Done~" << endl;
+                    clock_t start = clock();
                     CnfContainer cnf(enc.to_cnf());
-                    cout << "Solving SAT..." << endl;
                     Solver solver(cnf);
                     bool status = solver.solve();
                     if (status) {
                         Vector<int> res(solver.get_res());
                         Sudoku sudoku_sol(Decoder::decode(res));
-                        cout << sudoku_sol;
+                        cout << sudoku_sol << endl;
                     }
+                    clock_t end = clock();
+                    cout << "Total time: " << static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000 << endl;
                     op1 = 0;
                     cout << "Press enter to continue ";
                     getchar();
@@ -140,9 +144,10 @@ int main() {
                     cout << "------------------" << endl;
                     cout << "  1. Display CNF" << endl;
                     cout << "  2. Solve SAT" << endl;
+                    cout << "  3. Solve and Dump" << endl;
                     cout << "  0. Exit   " << endl;
                     cout << "------------------" << endl;
-                    cout << "  Choose operation [0~2]: ";
+                    cout << "  Choose operation [0~3]: ";
                     cin >> op2;
                     if (cin.fail()) {
                         cin.clear();
@@ -160,7 +165,19 @@ int main() {
                         case 2: {
                             cout << "Solving SAT..." << endl;
                             Solver solver(cnf);
-                            solver.solve(cout);
+                            solver.solve(cout, false);
+                            cout << "Press enter to continue ";
+                            getchar();
+                            getchar();
+                            break;
+                        }
+                        case 3: {
+                            string rst_filename = filename;
+                            rst_filename.replace(rst_filename.end() - 3, rst_filename.end(), "rst");
+                            ofstream f(rst_filename);
+                            cout << "Solving SAT..." << endl;
+                            Solver solver(cnf);
+                            solver.solve(f, true);
                             cout << "Press enter to continue ";
                             getchar();
                             getchar();

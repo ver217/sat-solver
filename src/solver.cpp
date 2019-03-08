@@ -44,7 +44,7 @@ bool Solver::DPLL() {
     return false;
 }
 
-bool Solver::solve(ostream &out) {
+bool Solver::solve(ostream &out, bool to_file) {
     clock_t start = clock();
     bool res = DPLL();
     clock_t end = clock();
@@ -64,6 +64,15 @@ bool Solver::solve(ostream &out) {
     else
         print_res(out);
     out << "t " << static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000 << endl;
+    if (to_file) {
+        cout << "s " << res << endl;
+        cout << "v ";
+        if (!res)
+            cout << endl;
+        else
+            print_res(cout);
+        cout << "t " << static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000 << endl;
+    }
     return res;
 }
 

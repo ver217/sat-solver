@@ -11,7 +11,7 @@ class Solver {
     Solver() = default;
     Solver(const CnfContainer& cnf);
     virtual ~Solver() = default;
-    bool solve(ostream &out);
+    bool solve(ostream &out, bool to_file);
     bool solve();
     ostream& print_res(ostream &out) const;
     bool check() const;
