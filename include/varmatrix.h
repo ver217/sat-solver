@@ -4,6 +4,7 @@
 
 #ifndef OLD
 class VarMatrix {
+  protected:
     size_t _length;
     size_t *_width;
     int **data;
@@ -16,6 +17,18 @@ class VarMatrix {
     size_t width(size_t idx) const;
     int* operator[](size_t i) const;
     int* operator[](size_t i);
+};
+
+class LiteralTable : public VarMatrix {
+    size_t n_unit;
+  public:
+    LiteralTable();
+    LiteralTable(size_t unit_cnt, const Vector<size_t> &cnt);
+    LiteralTable(const LiteralTable& table);
+    virtual ~LiteralTable() = default;
+    size_t width(int x) const;
+    int* operator[](int x) const;
+    int* operator[](int x);
 };
 #else
 class VarMatrix {
