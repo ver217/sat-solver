@@ -6,3 +6,4 @@ Makefile
 test/*
 .idea/*
 *.cbp
+.vscode/*
